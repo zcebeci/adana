@@ -1,0 +1,22 @@
+/* Makine Çizelgelemesi */
+
+/* Objective function */
+min: +Pts +Sal +Çar +Per +Cum +Cts +Paz;
+
+/* Constraints */
+1: +Pts +Sal +Çar +Per +Cum +Cts >= 3;
+2: +Sal +Çar +Per +Cum +Cts +Paz >= 5;
+3: +Pts +Çar +Per +Cum +Cts +Paz >= 10;
+4: +Pts +Sal +Per +Cum +Cts +Paz >= 12;
+5: +Pts +Sal +Çar +Cum +Cts +Paz >= 8;
+6: +Pts +Sal +Çar +Per +Cts +Paz >= 3;
+7: +Pts +Sal +Çar +Per +Cum +Paz >= 2;
+
+/* Variable bounds */
+Pts <= 25;
+Sal <= 25;
+Çar <= 25;
+Per <= 25;
+Cum <= 25;
+Cts <= 25;
+Paz <= 25;

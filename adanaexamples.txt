@@ -1,0 +1,4207 @@
+# BÖLÜM 1.......................................................................
+
+# Örnek 1.1: Tek değişkenli basit bir fonksiyon eğrisi
+# Bağımlılık: Kod 1.1
+fx = function(x) sin(x) + sin(2*x) + cos(3*x)
+x = seq(-2*pi, 2*pi, by=0.001)
+curve(fx,x)
+cr = curve(fx,x)
+xy = cbind(cr$x,cr$y)
+# Minimum ve maksimumların bulunması
+peaks = findoptima(cr$y, type="max")
+valleys = findoptima(cr$y, type="min")
+points(xy[peaks,], pch=19, cex=1.2, col=2)
+points(xy[valleys,], pch=18, cex=1.2, col=4)
+gmin = valleys[which.min(xy[valleys, 2])]
+gmax = peaks[which.max(xy[peaks, 2])]
+points(xy[gmax,1], xy[gmax, 2], pch=19, cex=2, col=2)
+points(xy[gmin,1], xy[gmin, 2], pch=18, cex=2, col=4)
+text(xy[gmax, 1], xy[gmax, 2], labels="Glob.Maks", 
+  pos=2, cex=0.8, col=1)
+text(xy[gmin,1],xy[gmin,2], labels="Glob.Min", 
+  pos=2, cex=0.8, col=1)
+
+# Örnek 1.2: optimize ile lokal arama tabanlı optimizasyon
+optimize(fx, c(-10, 5)) # Minimizasyon
+optimize(fx, c(-10, 5), maximum=TRUE) #Maksimizasyon
+
+# BÖLÜM 2 ......................................................................
+
+# Örnek 2.1: Onlu tamsayıdan ikili sayıya dönüştürme uygulaması 1
+# Bağımlılık: Kod: 2.1
+int2bin(250)
+int2bin(500)
+
+# Örnek 2.2: Onlu sayıdan ikili sayıya dönüştürme uygulaması 2
+int2bin(250, m=9)
+int2bin(500, m=9)
+int2bin(500, m=5)
+
+# Örnek 2.3: İkili sayıdan onlu tamsayıya dönüştürme uygulaması
+# Bağımlılık: Kod 2.1, 2.2 
+x = int2bin(500)
+x
+bin2int(x)
+
+# Örnek 2.4: İkili sayıdan gri kodlu sayıya dönüştürme uygulaması
+# Bağımlılık: Kod 2.3
+bin = c(1,0,1,1)
+bin2gray(bin)
+bin = c(1,0,1,0)
+bin2gray(bin)
+
+# Örnek 2.5: Gri kodlu sayıdan ikili sayıya dönüştürme uygulaması
+# Bağımlık: Kod 2.4
+gray = c(1,1,1,0)
+gray2bin(gray)
+gray = c(1,1,1,1)
+gray2bin(gray)
+
+# Örnek 2.6: Gri kodlu sayıdan ikili sayıya dönüştürme uygulaması
+# Bağımlık: Kod 2.5
+gray = c(1,1,1,0)
+gray2bin2(gray)
+gray = c(1,1,1,1)
+gray2bin2(gray)
+
+# Örnek 2.7: Onlu, sekizli ve onaltılı mod dönüşümleri
+dec = 250
+oct = as.octmode(dec)
+oct
+hex = as.hexmode(dec)
+hex
+as.integer(hex)
+
+# Örnek 2.8: Onlu, sekizli ve onaltılı mod dönüşümleri 2
+dec = 250
+hex = as.hexmode(dec)
+hex
+hex1 = format(hex, width=4, upper.case=TRUE)
+hex1
+dec = as.integer(hex)
+
+# Örnek 2.9: Bitişik iki tamsayının ikili kod karşılığı
+# Bağımlılık: Kod 2.1 
+x1 = int2bin(11)
+x1
+x2 = int2bin(12)
+x2
+hamdist = function(x1, x2) (sum(x1 != x2)) #Hamming uz. fonks.
+hamdist(x1, x2)
+
+# Örnek 2.10: Bitişik iki tamsayının gri kod karşılığı
+# Bağımlılık: Kod 2.1, 2.3; Örnek: 2.9
+x1 = bin2gray(int2bin(11))
+x1
+x2 = bin2gray(int2bin(12))
+x2
+humdist(x1, x2)
+
+# Örnek 2.11: Gerçel sayıdan ikili sayıya dönüştürme 1
+# Bağımlılık: Kod 2.6
+x = 102.5
+encode(x, lb=50, ub=250, m=8)
+
+# Örnek 2.12: İkili sayıdan gerçel sayıya dönüştürme
+# Bağımlılık: Kod 2.7
+x = c(0,1,0,0,0,0,1,1)
+decode(x, lb=50, ub=250, m=8)
+
+# Örnek 2.13a: İkili sayıdan gerçel sayıya dönüştürme
+# Bağımlılık: Kod 2.6, 2.7
+x = 102.5
+decode(encode(x, lb=50, ub=250, m=8), lb=50, ub=250, m=8)
+
+# Örnek 2.13b: İkili sayıdan gerçel sayıya dönüştürme
+# Bağımlılık: Kod 2.6, 2.7
+x = 102.5
+decode(encode(x, lb=50, ub=250, m=9), lb=50, ub=250, m=9)
+
+# Örnek 2.14a: Tamsayı matrisin ikili sayı matrisine dönüştürülmesi 
+n = 5
+lb = c(0, 0, 0)
+ub = c(10, 10, 10)
+set.seed(1)
+intmat = matrix(round(runif(3*n, lb, ub)), nr=n, nc=3) 
+colnames(intmat) = paste0("v",1:3)
+head(intmat)
+M = calcM(ub)
+M
+binmat = matrix(NA, nrow=n, ncol=sum(M))
+for(i in 1:n)
+  binmat[i,] = encode4int(intmat[i,], M=M)
+head(binmat)
+
+# Örnek 2.14b: İkili sayı matrisinin tamsayı matrise dönüştürülmesi 
+intmat2 = matrix(NA, nrow=nrow(intmat), ncol=ncol(intmat))
+for(i in 1:n)
+ intmat2[i,] = decode4int(binmat[i,], M=M)
+intmat2
+intmat == intmat2
+
+# Örnek 2.15: P1 kromozomunun kodlanması
+# Bağımlılık: Kod 2.6
+x=2.6; lb=2.5; ub=4.3; m=8
+(xbin = encode(x, lb, ub, m))
+y=-1; lb=-2; ub=2; m=9
+(ybin = encode(y, lb, ub, m))
+w=1.2; lb=0; ub=1.5; m=8
+(wbin = encode(w, lb, ub, m))
+p1 = c(xbin, ybin, wbin)
+p1
+length(p1)
+
+# Örnek 2.16a: Gerçel sayıların ikili sayı matrisinde kodlanması
+# Bağımlılık: Kod 2.11
+lb = c(2.5, -2, 0)
+ub = c(4.3, 2, 1.5)
+eps = c(0.1, 1, 0.01)
+d = nchar(sub('^+','',sub('\\.','',eps)))-1
+x = round(runif(5, lb[1],ub[1]),d[1])
+y = round(runif(5, lb[2],ub[2]),d[2])
+w = round(runif(5, lb[3],ub[3]),d[3])
+pop = cbind(x, y, w)
+pop
+encpop = encodepop(pop, lb, ub, eps)
+head(encpop$binmat[,1:10])
+m = encpop$m
+m
+
+# Örnek 2.16b: İkili sayı matrisinden gerçel sayıya dönüştürme
+# Bağımlılık: Kod 2.11, 2.12
+lb = c(2.5, -2, 0)
+ub = c(4.3, 2, 1.5)
+eps = c(0.1, 1, 0.01)
+d = nchar(sub('^+','',sub('\\.','',eps)))-1
+x = round(runif(5, lb[1],ub[1]),d[1])
+y = round(runif(5, lb[2],ub[2]),d[2])
+w = round(runif(5, lb[3],ub[3]),d[3])
+pop = cbind(x, y, w)
+pop    
+encpop = encodepop(pop, lb=lb, ub=ub, eps=eps)
+pop = encpop$binmat 
+m = encpop$m
+decpop = decodepop(pop, lb=lb, ub=ub, m=m)
+decpop
+for(j in 1:ncol(decpop)) decpop[,j]=round(decpop[,j], d[j])
+decpop
+
+# Örnek 2.17: İkili kodlama ile başlatma 1
+# Bağımlılık: Kod 2.13
+n = 20 #Populasyon büyüklüğü (kromozom sayısı)
+m = 5 # Gen sayısı (kromozom uzunluğu)
+population = initbin(n, m)
+head(population, 4)
+tail(population, 4)
+
+# Örnek 2.18: İkili kodlama ile başlatma 2
+# Bağımlılık: Kod 2.13
+n = 20 #Populasyon büyüklüğü 
+m = 5 # Gen sayısı
+population = initbin(n, m, type=2)
+head(population, 4)
+tail(population, 4)
+
+# Örnek 2.19: İkili kodlama ile başlatma 3
+# Bağımlılık: Kod 2.13
+population = initbin()
+head(population, 4)
+tail(population, 4)
+
+# Örnek 2.20: Değer kodlamalı başlatma 1
+# Bağımlılık: Kod 2.14
+n = 15 #Populasyon büyüklüğü
+m = 4 # Değişken sayısı
+population = initval(n, m)
+head(population, 3)
+tail(population, 3)
+
+# Örnek 2.21: Değer kodlamalı başlatma 2
+# Bağımlılık: Kod 2.14
+n = 15 #Populasyon büyüklüğü 
+m = 4 #Değişken sayısı
+lb = c(10, 2, 5, 100, 50, 25)
+ub = c(40, 8, 20, 500, 250, 90)
+population = initval(n, m, lb=lb, ub=ub)
+head(population, 3)
+
+# Örnek 2.22: Değer kodlamalı başlatma 3
+# Bağımlılık: Kod 2.14
+n = 15 #Populasyon büyüklüğü 
+m = 5 #Değişken sayısı
+lb= c(10, 2, 5, 100, 50, 25)
+ub = c(40, 8, 20, 500, 250, 90)
+population = initval(n, m, lb=lb, ub=ub, type=2)
+head(population,3)
+
+# Örnek 2.23: Değer kodlamalı (tamsayı) başlatma 4
+# Bağımlılık: Kod 2.14
+n = 20 #Populasyon büyüklüğü
+m = 6 #Değişken sayısı
+lb = c(10, 2, 5, 100, 50, 25)
+ub = c(40, 8, 20, 500, 250, 90)
+population = initval(n, m, lb=lb, ub=ub, nmode="integer")
+tail(population, 3)
+
+# Örnek 2.24: Permütasyon kodlamalı başlatma 1
+# Bağımlılık: Kod 2.15
+n = 10 #Populasyon büyüklüğü
+permset = 1:9 #Permütasyon elemanları seti
+population = initperm(n, permset=permset)
+head(population, 3)
+
+# Örnek 2.25: Permütasyon kodlamalı başlatma 2
+# Bağımlılık: Kod 2.15
+n = 10 #Populasyon büyüklüğü
+permset = LETTERS[1:5]
+population = initperm(n, permset=permset)
+head(population, 3)
+population = as.data.frame(population)
+head(population, 3)
+
+# Örnek 2.26: Sezgisel başlatma uygulaması
+# Bağımlık: Kod 2.13
+setwd("C:/gabook")
+prevpop = read.table("prevpop1.dat", sep="\t", header=FALSE)
+initpop = initbin(prevpop=prevpop) 
+print(initpop)
+
+# Örnek 2.27: Sezgisel başlatma uygulaması 2
+# Bağımlık: Kod 2.14
+vecmeans = c(10, 200, 0.5) #Ortalamalar
+vecsds = c(2, 30, 0.05) #Std.sapmalar
+n = 5
+m = length(vecmeans)
+normpop = matrix(NA, nrow=n, ncol=m)
+for(j in 1:m)
+  normpop[,j]=rnorm(n=n, mean=vecmeans[j], sd=vecsds[j])
+initpop = initval(prevpop=normpop) 
+print(initpop)
+
+# Örnek 2.28: Sezgisel başlatma uygulaması 3
+# Bağımlık: Kod 2.14
+n = 10
+x1 = rnorm(n, mean=50, sd=5)
+x2 = rweibull(n, shape=0.6)
+prevpop = cbind(x1, x2)
+initpop = initval(prevpop=prevpop) 
+initpop
+
+# Örnek 2.29: Hibrit başlatma uygulaması
+# Bağımlık: Kod 2.14
+setwd("C:/gabook")
+prevpop = read.table("prevpop2.dat", sep="\t", header=FALSE)
+lb = c(10, -5, 8, 100, -50) #Alt sınır değerleri
+ub = c(50, 25, 12, 120, 50) #Üst sınır değerleri
+n = 10 # Popülasyon büyüklüğü
+initpop = initval(n=n, prevpop=prevpop, 
+  lb=lb, ub=ub, nmode="integer") 
+initpop
+
+# Örnek 2.30: İkili kodlama ile rastlantısal başlatma
+# Bağımlık: Kod 2.16
+initpop = initialize(initfunc=initbin, n=6, m=4) 
+initpop
+
+# Örnek 2.31: Değer kodlamalı karma başlatma
+# Bağımlık: Kod 2.16
+setwd("C:/gabook")
+prevpop = read.table("prevpop2.dat", sep="\t")
+lb = c(10, -5, 8, 100, -50) #Alt sınır değerleri
+ub = c(50, 25, 12, 120, 50) #Üst sınır değerleri
+n = 8 # Popülasyon büyüklüğü
+m = 5
+initpop = initialize(initfunc=initval, n=n, m=m, 
+  prevpop=prevpop, lb=lb, ub=ub, nmode="integer", type=2) 
+initpop
+
+# Örnek 2.32: Özel fonksiyonla başlatma
+initpop = initialize(initfunc=initnorm, n=20, m=5, 
+  pmean=50, psd=5, type=2) 
+head(initpop,3)
+
+# Örnek 2.33: Beş bireylik bir MAXONE popülasyonu
+# C1 1 0 1 0 1 1 1 0 -> 5
+# C2 1 1 1 0 1 0 0 0 -> 4
+# C3 1 1 1 1 1 1 1 1 -> 8
+# C4 0 1 0 1 0 1 1 1 -> 5
+# C5 1 1 1 1 0 0 0 0 -> 4
+
+# Örnek 2.34: MAXONE uyum hesaplama 1
+# Bağımlılık: Kod 2.18a
+C2 = c(1, 1, 1, 0, 1, 0, 0, 0)
+maxone1(C2)
+C3 = c(1, 1, 1, 1, 1, 1, 1, 1)
+maxone1(C3)
+
+#Örnek 2.35: MAXONE uyum hesaplama 2
+# Bağımlılık: Kod 2.18b
+maxone(C2)
+maxone(C3)
+
+# Örnek 2.36: Matris formatında popülasyon
+binmat = matrix(nrow=5, ncol=8, byrow=TRUE, c(
+1, 0, 1, 0, 1, 1, 1, 0,
+1, 1, 1, 0, 1, 0, 0, 0,
+1, 1, 1, 1, 1, 1, 1, 1,
+0, 1, 0, 1, 0, 1, 1, 1,
+0, 0, 0, 0, 0, 0, 0, 0
+))
+rownames(binmat) = paste0("C",1:5)
+binmat
+
+# Örnek 2.37: MAXONE uyum hesaplama 3
+# Bağımlılık: Kod 2.18c
+maxone2(binmat)
+
+# Örnek 2.38: MINONE uyum hesaplama
+# Bağımlılık: Kod 2.19; Örnek 2.36
+minone(binmat)
+
+# Örnek 2.39: Kısıtlı uyum fonksiyonu uygulaması
+# Bağımlılık: Kod 2.20
+x1 = c(50, 350, 150)
+x2 = c(650, 350, 400)
+x = cbind(x1, x2)
+x
+somefits = c()
+for(i in 1:3) 
+  somefits[i]=penfit(x[i,])
+somefits
+
+# Örnek 2.40: MAXONE uyum değerleri
+# Bağımlılık: Kod 2.13, 2.18b, 2.21
+population = initbin()
+head(population, 5)
+m = ncol(population)-2
+fitvals = evaluate(maxone, population[,1:m], objective="max")
+head(fitvals, 5)
+
+# Örnek 2.41: MINONE uyum değerleri
+# Bağımlılık: Kod 2.18b, 2.21; Örnek 2.40
+fitvals = evaluate(maxone, population[,1:m], objective="min")
+head(fitvals, 5)
+
+# Örnek2.42: penfit fonksiyonu ile uyum değerleri
+# Bağımlılık: Kod 2.14, 2.20, 2.21
+population = initialize(initval, n=10, m=2,
+  lb=c(0, 0), ub=c(1000, 1000), type=1)
+head(population, 3)
+m = ncol(population)-2
+fitvals = evaluate(penfit, population[,1:m])
+population[,"fitval"]=fitvals
+head(population, 3)
+fitvals = evaluate(penfit, population[,1:m], objective="min")
+population[,"fitval"]=fitvals
+head(population, 3)
+
+# Örnek 2.43: Rastlantısal seçim uygulaması
+# Bağımlılık: Kod 2.22
+fitvals = c(6, -1, 2, 4, 5) # Uyum değerleri
+cnames = paste0("C",1:length(fitvals)) #Kromozom adları
+matpool = selrand(fitvals)
+cat("Seçilenler: ", cnames[matpool], "\n")
+
+# Örnek 2.44: Uyum olasılıklarının hesaplanması
+fitvals = c(6, 1, 2, 4, 5)
+cnames = paste0("C",1:length(fitvals))
+p = fitvals/sum(fitvals)
+p
+p = round(p, 2)
+p
+
+# Örnek 2.45: Kümülatif olasılıklarının hesaplanması
+# Bağımlılık: Örnek 2.44
+q = cumsum(p)
+q
+
+# Örnek 2.46: Beklenen seçilme sayılarının hesaplanması
+# Bağımlılık: Örnek 2.44
+e = p*length(fitvals)
+e
+
+# Örnek 2.47: Beklenen seçilme sayıları (tamsayı)
+# Bağımlılık: Örnek 2.46
+round(e,0)
+
+# Örnek 2.48: Uyum oranları grafiği (rulet çarkı)
+pie(p, labels=paste(cnames, "=", p), col=rainbow(5))
+
+# Örnek 2.49a: RSWRP ile seçim uygulaması 1
+fitvals = c(6, 1, 2, 4, 5) # Uyum değerleri
+cnames = paste0("C",1:length(fitvals)) #Kromozom adları
+matpool = selrswrp(fitvals)
+cat("Seçilenler: ", cnames[matpool], "\n")
+
+# Örnek 2.49b: RSWRP ile seçim uygulaması 2
+fitvals = c(6, 1, 2, 4, 5) # Uyum değerleri
+cnames = paste0("C",1:length(fitvals)) #Kromozom adları
+matpool = selrswrp(fitvals, ns=8)
+cat("Seçilenler: ", cnames[matpool], "\n")
+
+# Örnek 2.50: Kümülatif olasılık grafiği
+fitvals = c(6, 1, 2, 4, 5)
+names(fitvals) = paste0("C",1:length(fitvals))
+p = fitvals/sum(fitvals)
+p	
+barplot(as.matrix(p), horiz=T,col=c(2:7), 
+  ylim=c(1,7), col.axis=7)
+
+# Örnek 2.51: RWS ile seçim uygulaması
+# Bağımlılık: Kod 2.24
+fitvals = c(6, 1, 2, 4, 5)
+cnames = paste0("C",1:length(fitvals))
+matpool = selrws(fitvals)
+cat("Seçilenler: ", cnames[matpool], "\n")
+
+# Örnek 2.52: RWS ile seçim uygulaması 2
+# Bağımlılık: Kod 2.25
+fitvals = c(6, 1, 2, 4, 5)
+cnames = paste0("C",1:length(fitvals))
+matpool = selrws(fitvals)
+cat("Seçilenler: ", cnames[matpool], "\n")
+
+# Örnek 2.53: RSS ile seçim uygulaması
+# Bağımlılık: Kod 2.26
+fitvals = c(6, 1, 2, 4, 5)
+cnames = paste0("C",1:length(fitvals))
+matpool = selrss(fitvals)
+cat("Seçilenler: ", cnames[matpool], "\n")
+
+# Örnek 2.54: Stokastik evrensel seçim uygulaması
+# Bağımlılık: Kod 2.27 
+fitvals = c(6, 1, 2, 4, 5)
+cnames = paste0("C",1:length(fitvals))
+matpool = selsus(fitvals)
+cat("Seçilenler: ", cnames[matpool], "\n")
+
+# Örnek 2.55: Deterministik seçim uygulaması
+# Bağımlılık: Kod 2.28 
+fitvals = c(6, 1, 2, 4, 5)
+cnames = paste0("C",1:length(fitvals))
+matpool = seldet(fitvals)
+cat("Seçilenler: ", cnames[matpool], "\n")
+
+# Örnek 2.56: Pencere ölçeklendirmesi uygulaması
+# Bağımlılık: Kod 2.29 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+fmin = min(fitvals)
+cnames = paste0("C",1:length(fitvals))
+matpool = selwscale(fitvals, fmin=fmin)
+cat(cnames[matpool],"\n")
+fitvals = fitvals[matpool]
+fitvals
+matpool = selwscale(fitvals, fmin=fmin)
+cat(cnames[matpool],"\n")
+fitvals = fitvals[matpool]
+fitvals
+fmin = min(fitvals)
+matpool = selwscale(fitvals, fmin=fmin)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.57: Sigma ölçeklendirmesi uygulaması
+# Bağımlılık: Kod 2.30 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals))
+matpool = selsscale(fitvals, selc=2)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.58: Sigma ölçeklendirmesi uygulaması 2
+# Bağımlılık: Kod 2.31 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals))
+matpool = selsscale2(fitvals)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.59: Doğrusal uyum ölçeklendirmesi uygulaması
+# Bağımlılık: Kod 2.32 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals))
+matpool = sellscale(fitvals)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.60: Sıra sayısıyla ölçeklendirme uygulaması
+# Bağımlılık: Kod 2.33 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals))
+matpool = selrscale(fitvals)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.61: Sıra sayısıyla ölçeklendirme uygulaması 2
+# Bağımlılık: Kod 2.34 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals))
+matpool = selrscale2(fitvals)
+cat(cnames[matpool],"\n")
+matpool = selrscale2(fitvals, sels=2)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.62: Güç ölçeklendirmesi uygulaması
+# Bağımlılık: Kod 2.35 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals))
+matpool = selpscale(fitvals, selk=1.1)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.63: Üs ölçeklendirmesi uygulaması
+# Bağımlılık: Kod 2.36 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals))
+matpool = selescale(fitvals, selb=0.1)
+cat(cnames[matpool],"\n")
+matpool = selescale(fitvals, selb=2)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.64: Turnuva seçimi uygulaması
+# Bağımlılık: Kod 2.37 
+selt = 2  #Turnuva büyüklüğü
+fitvals = c(6, -1, 2, 4, 5) # Uyum değerleri
+cnames = paste0("C",1:length(fitvals)) #Kromozom adları
+matpool = seltour(fitvals, selt=selt)
+cat(cnames[matpool],"\n")
+
+# Örnekm 2.65: Turnuva seçimi uygulaması 2
+# Bağımlılık: Kod 2.38 
+selt = 2  #Turnuva büyüklüğü
+fitvals = c(6, -1, 2, 4, 5) # Uyum değerleri
+matpool = seltour2(fitvals, selt=selt)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.66: Boltzmann turnuva seçimi uygulaması
+# Bağımlılık: Kod 2.40 
+fitvals = c(6, -1, 2, 4, 5) # Uyum değerleri
+cnames = paste0("C",1:length(fitvals)) #Kromozom adları
+matpool = selboltour(fitvals, selt0=100, selg=5, selgmax=100)
+cat(cnames[matpool],"\n")
+matpool = selboltour(fitvals, selt0=100, selg=95, selgmax=100)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.67: Birbirine yakın uyum değerleri sorunu
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+p = round(fitvals/sum(fitvals),2)
+p
+
+# Örnek 2.68: Uyum değerlerine sıra sayısı atama
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+fitranks = rank(fitvals, ties.method="min")
+fitranks
+
+# Örnek 2.69: Uyum sırasına göre olasılıklar
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+fitranks = rank(fitvals, ties.method="min")
+pr = round(fitranks/sum(fitranks),2)
+pr
+
+# Örnek 2.70: Uyum değeri ve uyum sırasına göre olasılıklar
+opar = par(mfrow=c(1,2), mar=c(1, 3, 1, 3))
+pie(p, labels=paste(cnames, "=", p), col=rainbow(5))
+pie(pr, labels=paste(cnames, "=", pr), col=rainbow(5))
+par(opar)
+
+# Örnek 2.71: Doğrusal sıra seçimi uygulaması 1
+# Bağımlılık: Kod 2.41 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals)) #Kromozom adları
+matpool = sellrs(fitvals)
+cat(cnames[matpool],"\n")
+matpool = sellrs(fitvals, sels=2)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.72: Doğrusal sıra seçimi uygulaması 2
+# Bağımlılık: Kod 2.42 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals))
+matpool = sellrs2(fitvals)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.73: Doğrusal sıra seçimi uygulaması 3
+# Bağımlılık: Kod 2.43 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals)) 
+matpool = sellrs3(fitvals)
+cat(cnames[matpool],"\n")
+matpool = sellrs3(fitvals, sels=2)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.74: Doğrusal olmayan sıra seçimi uygulaması
+# Bağımlılık: Kod 2.44 
+fitvals = c(6.1, 3.5, 6.2, 4.4, 5.2)
+cnames = paste0("C",1:length(fitvals))
+matpool = selnlrs(fitvals)
+cat(cnames[matpool],"\n")
+matpool = selnlrs(fitvals, selns=0.1)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.75: Üssel sıra seçimi uygulaması
+# Bağımlılık: Kod 2.45 
+fitvals = c(6, -1, 2, 4, 5) 
+cnames = paste0("C",1:length(fitvals)) 
+matpool = selers(fitvals, selbc=0.1)
+cat(cnames[matpool],"\n")
+matpool = selers(fitvals, selbc=0.8)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.76: Kesme seçimi uygulaması
+# Bağımlılık: Kod 2.46 
+fitvals = c(6, -1, 2, 4, 5) 
+cnames = paste0("C",1:length(fitvals)) 
+matpool = seltrunc(fitvals, selps=0.60)
+cat(cnames[matpool],"\n")
+
+# Örnek 2.77: Ebeveyn seçme uygulaması 1 : Rulet çarkı seçimi 
+# Bağımlılık: Kod 2.13, 2.16, 2.18b, 2.21, 2.24, 2.47 
+# Örnek popülasyonu oluştur
+population = initialize(initfunc=initbin, n=10, m=8)
+head(population, 5)
+# Uyum değerlerini hesapla
+m = ncol(population)-2
+fitvals = evaluate(maxone, population[,1:m])
+population[,"fitval"] = fitvals
+head(population, 5)
+# RWS ile ebeveyn seç
+selidx = select(selfunc=selrws, fitvals=fitvals)
+matpool = population[selidx,]
+head(matpool, 5)
+# Seçilenlerin sayıları
+table(rownames(matpool))
+
+# Örnek 2.78: Ebeveyn seçme uygulaması 2 : Turnuva seçimi 
+# Bağımlılık: Kod 2.37, 2.47 ; Örnek 2.80
+selidx = select(selfunc=seltour, fitvals=fitvals, selt=2)
+matpool = population[selidx,]
+head(matpool, 5)
+table(rownames(matpool))
+
+# Örnek 2.79: Değer kodlamalı popülasyonda LRS ile ebeveyn seçme
+# Bağımlılık: Kod 2.14, 2.20, 2.41, 2.47 
+# Örnek popülasyonu oluştur
+population = initval(n=10, lb=c(0, 0), ub=c(750, 750))
+head(population, 5)
+m = ncol(population)-2
+fitvals = evaluate(penfit, population[,1:m], objective="max")
+population[,"fitval"] = fitvals
+head(population, 5)
+selidx = select(selfunc=sellrs, fitvals=fitvals)
+matpool = population[selidx,]
+head(matpool, 5)
+table(rownames(matpool))
+
+# Örnek 2.80: Tek noktalı çaprazlama uygulaması 1
+# Bağımlılık: Kod 2.48
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+px1(ebeveyn1, ebeveyn2)
+
+# Örnek 2.81: Tek noktalı çaprazlama uygulaması 2
+# Bağımlılık: Kod 2.48 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+px1(ebeveyn1, ebeveyn2, cxon=3)
+
+# Örnek 2.82: Çok noktalı çaprazlama uygulaması 1
+# Bağımlılık: Kod 2.49 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+kpx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.83: Çok noktalı çaprazlama uygulaması 2
+# Bağımlılık: Kod 2.49 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+kpx(ebeveyn1, ebeveyn2, cxk=3)
+
+# Örnek 2.84: Çok noktalı çaprazlama uygulaması 3
+# Bağımlılık: Kod 2.49 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+kpx(ebeveyn1, ebeveyn2, cxk=3, cxon=1)
+
+# Örnek 2.85: Karıştırmalı çaprazlama uygulaması 1
+# Bağımlılık: Kod 2.50 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+sc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.86: Karıştırmalı çaprazlama uygulaması 2
+# Bağımlılık: Kod 2.50 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+sc(ebeveyn1, ebeveyn2, cxon=4)
+
+# Örnek 2.87: İndirgenmiş aktarma çaprazlaması uygulaması 1
+# Bağımlılık: Kod 2.51
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+rsc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.88: İndirgenmiş aktarma çaprazlaması uygulaması 2
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 0, 1, 0, 1, 1, 1, 0)
+rsc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.89: Sezgisel tekdüze çaprazlaması uygulaması 1
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+hux(ebeveyn1, ebeveyn2)
+
+# Örnek 2.90: Sezgisel tekdüze çaprazlaması uygulaması 2
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+hux(ebeveyn1, ebeveyn2, cxon=1, cxps=0.8)
+
+# Örnek 2.91: Tekdüze çaprazlama uygulaması 
+# Bağımlılık: Kod 2.53
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+ux(ebeveyn1, ebeveyn2, cxon=3)
+
+# Örnek 2.92: Tekdüze çaprazlama uygulaması 2
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+ux2(ebeveyn1, ebeveyn2, cxon=2)
+
+# Örnek 2.93: Tekdüze çaprazlama uygulaması 3
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+ux2(ebeveyn1, ebeveyn2, cxon=2, cxps=0.75)
+
+# Örnek 2.94: Maske çaprazlaması uygulaması
+# Bağımlılık: Kod 2.55 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+mx(ebeveyn1, ebeveyn2, cxon=3)
+
+# Örnek 2.95: Saygılı çaprazlama uygulaması
+# Bağımlılık: Kod 2.56a 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+rrc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.96: Saygısız çaprazlama uygulaması
+# Bağımlılık: Kod 2.56b 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+disc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.97: ATC çaprazlama uygulaması
+# Bağımlılık: Kod 2.57 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+atc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.98: Sayı korumalı çaprazlama uygulaması
+# Bağımlılık: Kod 2.58 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+cpc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.99: Bağlantı/Değiştokuş çaprazlaması uygulaması
+# Bağımlılık: Kod 2.59 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+eclc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.100: RAOC çaprazlaması uygulaması
+# Bağımlılık: Kod 2.60 
+ebeveyn1 = c(1, 0, 1, 0, 1, 1, 1, 0)
+ebeveyn2 = c(1, 1, 1, 0, 1, 0, 0, 1)
+raoc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.101: Kesikli çaprazlama uygulaması
+# Bağımlılık: Kod 2.61 
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+dc(ebeveyn1, ebeveyn2, cxps=0.6)
+
+# Örnek 2.102: Ortalama çaprazlama uygulaması
+# Bağımlılık: Kod 2.62 
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+ax(ebeveyn1, ebeveyn2, cxon=1)
+
+# Örnek 2.103: Sezgisel çaprazlama uygulaması
+# Bağımlılık: Kod 2.63
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+hc(ebeveyn1, ebeveyn2)
+
+# Örnek 2.104: Tekli aritmetik çaprazlama 
+# Bağımlılık: Kod 2.64 
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+sax(ebeveyn1, ebeveyn2)
+
+# Örnek 2.105: Tam aritmetik çaprazlama 
+# Bağımlılık: Kod 2.65 
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+wax(ebeveyn1, ebeveyn2)
+
+# Örnek 2.106: Lokal aritmetik çaprazlama uygulaması 
+# Bağımlılık: Kod 2.66 
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+lax(ebeveyn1, ebeveyn2, cxon=3)
+
+# Örnek 2.107: Düz çaprazlama uygulaması
+# Bağımlılık: Kod 2.67 
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+bx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.108: Geliştirilmiş kutu çaprazlaması uygulaması
+# Bağımlılık: Kod 2.68 
+lb = c(0, 0, 0, 0, 0, 0)
+ub = c(2, 3, 1, 2, 4, 3)
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+ebx(ebeveyn1, ebeveyn2, lb, ub)
+
+# Örnek 2.109: Harmanlanmış çaprazlama uygulaması
+# Bağımlılık: Kod 2.69 
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+blxa(ebeveyn1, ebeveyn2, cxon=3)
+
+# Örnek 2.110: Harmanlanmış çaprazlama (Alfa-Beta) uygulaması
+# Bağımlılık: Kod 2.70 
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+blxab(ebeveyn1, ebeveyn2)
+
+# Örnek 2.111: Laplace çaprazlaması uygulaması
+# Bağımlılık: Kod 2.71
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+lapx(ebeveyn1, ebeveyn2, cxon=3)
+
+# Örnek 2.112: Genişletilmiş hat çaprazlaması uygulaması
+# Bağımlılık: Kod 2.72 
+lb = c(0, 0, 0, 0, 0, 0)
+ub = c(2, 3, 1, 2, 4, 3)
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+elx(ebeveyn1, ebeveyn2, lb, ub, cxealfa=1000)
+
+# Örnek 2.113: Geometrik çaprazlama uygulaması
+# Bağımlılık: Kod 2.73
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+geomx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.114: Küre çaprazlaması uygulaması
+# Bağımlılık: Kod 2.74 
+ebeveyn1 = c(1.1, 1.6, 0.0, 1.1, 1.4, 1.2)
+ebeveyn2 = c(1.2, 0.0, 0.0, 1.5, 1.2, 1.4)
+spherex(ebeveyn1, ebeveyn2)
+
+# Örnek 2.115: Kısmi eşleşmeli çaprazlama uygulaması
+# Bağımlılık: Kod 2.75
+ebeveyn1 = c(3, 4, 8, 2, 7, 1, 6, 5)
+ebeveyn2 = c(4, 2, 5, 1, 6, 8, 3, 7)
+pmx(ebeveyn1, ebeveyn2, cxon=2)
+ 
+# Örnek 2.116: Değiştirilmiş kısmi eşleşmeli çaprazlama 1
+# Bağımlılık: Kod 2.76 
+ebeveyn1 = c(0, 8, 4, 5, 6, 7, 1, 2, 3, 9)
+ebeveyn2 = c(6, 7, 1, 2, 4, 8, 3, 5, 9, 0)
+mpmx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.117: Değiştirilmiş kısmi eşleşmeli çaprazlama 2
+# Bağımlılık: Kod 2.76 
+ebeveyn1 = c(5, 4, 1, 2, 3, 8, 6, 7)
+ebeveyn2 = c(4, 8, 1, 2, 3, 5, 7, 6)
+mpmx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.118: Tekdüze kısmi eşleşmeli çaprazlama 
+ebeveyn1 = c(0, 8, 4, 5, 6, 7, 1, 2, 3, 9)
+ebeveyn2 = c(6, 7, 1, 2, 4, 8, 3, 5, 9, 0)
+upmx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.119: Sıra çaprazlaması uygulaması
+# Bağımlılık: Kod 2.78 
+ebeveyn1 = c(3, 4, 8, 2, 7, 1, 6, 5)
+ebeveyn2 = c(4, 2, 5, 1, 6, 8, 3, 7)
+ox(ebeveyn1, ebeveyn2)
+
+# Örnek 2.120: Sıra çaprazlaması uygulaması
+# Bağımlılık: Kod 2.79 
+ebeveyn1 = c(1, 2, 3, 4, 5, 6, 7, 8)
+ebeveyn2 = c(4, 2, 5, 1, 6, 8, 3, 7)
+ox2(ebeveyn1, ebeveyn2)
+
+# Örnek 2.121: Maksimal koruyucu çaprazlama uygulaması
+# Bağımlılık: Kod 2.80 
+ebeveyn1 = c(0, 8, 4, 5, 6, 7, 1, 2, 3, 9)
+ebeveyn2 = c(6, 7, 1, 2, 4, 8, 3, 5, 9, 0)
+mpx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.122: Kenar rekombinasyonu uygulaması
+# Bağımlılık: Kod 2.81 
+ebeveyn1 = c(1, 3, 5, 6, 4, 2, 8, 7)
+ebeveyn2 = c(1, 4, 2, 3, 6, 5, 7, 8)
+erx(ebeveyn1, ebeveyn2, cxon=2)
+
+# Örnek 2.123: Konuma dayalı çaprazlama uygulaması
+# Bağımlılık: Kod 2.82 
+ebeveyn1 = c(3, 4, 8, 2, 7, 1, 6, 5)
+ebeveyn2 = c(4, 2, 5, 1, 6, 8, 3, 7)
+pbx(ebeveyn1, ebeveyn2, cxon=2)
+
+# Örnek 2.124: Konuma dayalı çaprazlama uygulaması
+# Bağımlılık: Kod 2.83 
+ebeveyn1 = c(3, 4, 8, 2, 7, 1, 6, 5)
+ebeveyn2 = c(4, 2, 5, 1, 6, 8, 3, 7)
+pbx2(ebeveyn1, ebeveyn2, cxon=2)
+
+# Örnek 2.125: Döngü çaprazlaması uygulaması 1
+# Bağımlılık: Kod 2.84 
+ebeveyn1 =c(9, 8, 2, 1, 7, 4, 5, 0, 6, 3)
+ebeveyn2 =c(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
+cx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.126: Döngü çaprazlaması uygulaması 2
+# Bağımlılık: Kod 2.84 
+ebeveyn1 = c(1, 2, 3, 4, 5, 6, 7, 8) 
+ebeveyn2 = c(2, 4, 6, 8, 7, 5, 3, 1)
+cx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.127: Döngü çaprazlaması uygulaması 3
+ebeveyn1 = c(1,3,5,6,4,2,8,7)
+ebeveyn2 = c(1,4,2,3,6,5,7,8)
+cx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.128: İyileştirilmiş döngü çaprazlaması uygulaması 1
+# Bağımlılık: Kod 25
+ebeveyn1 = c(3, 4, 8, 2, 7, 1, 6, 5)
+ebeveyn2 = c(4, 2, 5, 1, 6, 8, 3, 7)
+icx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.129: İyileştirilmiş döngü çaprazlaması uygulaması 2
+# Bağımlılık: Kod 2.85  
+ebeveyn1 = c(1, 2, 3, 4, 5, 6, 7, 8) 
+ebeveyn2 = c(6, 8, 4, 3, 1, 2, 5, 7)
+icx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.130: İyileştirilmiş döngü çaprazlaması uygulaması 3
+# Bağımlılık: Kod 2.85 
+ebeveyn1 = c(1, 2, 3, 4, 5, 6, 7, 8) 
+ebeveyn2 = c(1, 2, 3, 4, 5, 6, 7, 8)
+icx(ebeveyn1, ebeveyn2)
+
+# Örnek 2.131: Sinüs hareketi çaprazlaması uygulaması
+# Bağımlılık: Kod 2.86 
+ebeveyn1 = c(1, 2, 3, 4, 5, 6, 7, 8) 
+ebeveyn2 = c(4, 6, 7, 3, 2, 1, 8, 6)
+smc(ebeveyn1, ebeveyn2)
+ 
+# Örnek 2.132: İkili kodlanmış bir popülasyon için uygulama
+# Bağımlılık: Kod 2.13, 2.21, 2.24, 2.47, 2.48, 2.9, 2.87 
+genpop = initbin(12,8) #Başlangıç popülasyonu
+m = ncol(genpop)-2 #Gen sayısı
+sumx = function(x) (sum(x)) #Uyum fonksiyonu
+fitvals = evaluate(fitfunc=sumx, genpop[,1:m]) #Uyum değerleri
+genpop[,"fitval"] = fitvals
+selidx = select(selfunc=selrws, fitvals) #Ebeveyn seçimi
+matpool = genpop[selidx,] #Çiftleşme havuzu
+offsprings = cross(crossfunc=px1, matpool=matpool, #Çaprazlama
+ cxon=2, cxpc=0.8, gatype="gga")
+offsprings
+offsprings = cross(crossfunc=kpx, matpool=matpool,
+  cxon=2, cxpc=0.8, gatype="ssga", cxps=0.5, cxk=2)
+offsprings
+
+# Örnek 2.133: Bit dönüştürme mutasyonu uygulaması
+# Bağımlılık: Kod 2.88
+yavru = c(1,1,0,1,0,1,0,1,0,0)
+bitmut(yavru)
+
+# Örnek 2.134: Rastlantısal mutasyon uygulaması 1
+# Bağımlılık: Kod 2.89
+lb = c(2, 1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+yavru = c(8, 6, 4, 1, 3, 7)
+randmut(yavru, lb, ub)
+
+# Örnek 2.135: Rastlantısal mutasyon uygulaması 2
+# Bağımlılık: Kod 2.90
+lb = c( 2,  1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+yavru = c(8, 6, 4, 1, 3, 7)
+randmut2(yavru, lb=lb, ub=ub, mutpm=0.1)
+
+# Örnek 2.136: Rastlantısal mutasyon uygulaması 3
+# Bağımlılık: Kod 2.91
+lb = c(2, 1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+yavru = c(8, 6, 4, 1, 3, 7)
+randmut3(yavru, lb=lb, ub=ub, mutpm=0.1)
+
+# Örnek 2.137: Rastlantısal mutasyon uygulaması 4
+# Bağımlılık: Kod 2.92
+lb = c(2, 1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+yavru = c(8, 6, 4, 1, 3, 7)
+randmut4(yavru, lb=lb, ub=ub)
+
+# Örnek 2.138: Tekdüze değer mutasyonu uygulaması
+# Bağımlılık: Kod 2.93
+lb = c(2, 1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+yavru = c(8, 6, 4, 1, 3, 7)
+unimut(yavru, lb, ub)
+
+# Örnek 2.139: Sınır değeri mutasyonu uygulaması
+# Bağımlılık: Kod 2.94
+lb = c(2, 1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+yavru = c(8, 6, 4, 1, 3, 7)
+boundmut(yavru, lb=lb, ub=ub)
+
+# Örnek 2.140: Tekdüze olmayan mutasyon uygulaması
+# Bağımlılık: Kod 2.95
+lb = c(2, 1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+yavru = c(8, 6, 4, 1, 3, 7)
+set.seed(12)
+nunimut(yavru, lb=lb, ub=ub, g=1, gmax=100, mutb=0.5)
+set.seed(12)
+nunimut(yavru, lb=lb, ub=ub, g=50, gmax=100, mutb=0.5)
+
+# Örnek 2.141: Uyarlamalı tekdüze olmayan mutasyon uygulaması
+# Bağımlılık: Kod 2.96
+lb = c(2, 1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+yavru = c(8, 6, 4, 1, 3, 7)
+set.seed(12)
+nunimut2(yavru, lb=lb, ub=ub, g=1, gmax=100, mutb=0.5)
+set.seed(12)
+nunimut2(yavru, lb=lb, ub=ub, g=50, gmax=100, mutb=0.5)
+
+# Örnek 2.142: Güç mutasyonu uygulaması
+# Bağımlılık: Kod 2.97
+lb = c(2, 1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+yavru = c(8, 6, 4, 1, 3, 7)
+set.seed(12)
+powmut(yavru, lb=lb, ub=ub, mutpow=3)
+
+# Örnek 2.143: Güç mutasyonu uygulaması 2
+# Bağımlılık: Kod 2.98
+lb = c(2, 1, 3, 1, 0, 4)
+ub = c(10, 15, 8, 5, 6, 9)
+mutpow = c(3, 0.5, 0.5, 2, 3, 1)
+yavru = c(8, 6, 4, 1, 3, 7)
+set.seed(12)
+powmut2(yavru, lb=lb, ub=ub, mutpow=mutpow)
+
+# Örnek 2.144: Gauss mutasyonu uygulaması 1
+# Bağımlılık: Kod 2.99
+mutsdy = c(1, 1.5, 1.01, 0.4, 1.5, 1.2)
+yavru = c(8, 6, 4, 1, 3, 7)
+set.seed(12)
+gaussmut(yavru)
+
+# Örnek 2.145: Gauss mutasyonu uygulaması 2
+# Bağımlılık: Kod 2.100
+yavru = c(8, 6, 4, 1, 3, 7)
+set.seed(12)
+gaussmut2(yavru)
+
+# Örnek 2.146: Gauss mutasyonu uygulaması 3
+# Bağımlılık: Kod 2.101
+mutmy = c(5, 5, 2, 4, 3, 4)
+mutsdy = c(1, 1.5, 1.01, 0.4, 1.5, 1.2)
+yavru = c(8, 6, 4, 1, 3, 7)
+set.seed(12)
+gaussmut(yavru, mutmy=mutmy, mutsdy=mutsdy)
+
+# Örnek 2.147: Sınırlarda aramaya özel mutasyon uygulaması 1
+# Bağımlılık: Kod 2.102
+yavru = c(8, 6, 4, 1, 3)
+#set.seed(12)
+bsearchmut1(yavru)
+mutq = 0.5
+#set.seed(12)
+bsearchmut1(yavru, mutq=0.5)
+
+# Örnek 2.148: Sınırlarda aramaya özel mutasyon 2
+yavru = c(8, 6, 4, 1, 3)
+bsearchmut2(yavru)
+
+# Örnek 2.149: Takas mutasyonu uygulaması 1
+# Bağımlılık: Kod 2.104
+yavru = c(1, 2, 3, 4, 5, 6, 7, 8, 9)
+swapmut(yavru)
+
+# Örnek 2.150: Takas mutasyonu uygulaması 2
+# Bağımlılık: Kod 2.104
+yavru = c(1, 1, 0, 1, 0, 1, 0, 1, 0, 0)
+swapmut(yavru)
+
+# Örnek 2.151: Ters çevirme mutasyonu uygulaması
+# Bağımlılık: Kod 2.105
+yavru = c(1, 2, 3, 4, 5, 6, 7, 8, 9)
+invmut(yavru)
+
+# Örnek 2.152: Karıştırma mutasyonu uygulaması
+# Bağımlılık: Kod 2.106
+yavru = c(1, 2, 3, 4, 5, 6, 7, 8, 9)
+shufmut(yavru)
+
+# Örnek 2.153: Araya girme mutasyonu
+# Bağımlılık: Kod 2.107
+yavru = c(1, 2, 3, 4, 5, 6, 7, 8, 9)
+insmut(yavru)
+
+# Örnek 2.154: Yer değiştirme mutasyonu uygulaması
+# Bağımlılık: Kod 2.108
+yavru = c(1, 2, 3, 4, 5, 6, 7, 8, 9)
+dismut(yavru)
+
+# Örnek 2.155: Takas + Ters çevirme mutasyonu uygulaması
+# Bağımlılık: Kod 2.109
+yavru = c(1, 2, 3, 4, 5, 6, 7, 8, 9)
+invswapmut(yavru)
+
+# Örnek 2.156: Araya girme + Ters çevirme mutasyonu uygulaması
+# Bağımlılık: Kod 2.110
+yavru = c(1, 2, 3, 4, 5, 6, 7, 8, 9)
+insswapmut(yavru)
+
+# Örnek 2.157: Yer değiştirme + Ters çevirme mutasyonu uygulaması
+# Bağımlılık: Kod 2.111
+yavru = c(1, 2, 3, 4, 5, 6, 7, 8, 9)
+invdismut(yavru)
+
+# Örnek 2.158: Mutasyon uygulaması
+# Bağımlılık: Kod 2.13, 2.18b, 2.21, 2.88, 2.112
+offsprings=initbin(25,5)
+offsprings[,"fitval"] = evaluate(maxone,
+  offsprings[,1:(ncol(offsprings)-2)])
+head(offsprings, 4) #mutant birey daha ileride olabilir.
+mutatedpop = mutate(mutfunc=bitmut, population=offsprings, 
+  mutpm=0.1, gatype="gga")
+mutatedpop[,"fitval"] = evaluate(maxone,
+  mutatedpop[,1:(ncol(mutatedpop)-2)])
+head(mutatedpop, 4)
+
+# Örnek 2.159: adana'da sonlandırma ölçütü seçilmesi ve ayarı
+garesult = adana(..., tercrit=c(1, 2, 4 ,8, 11, 12),
+  objval=117, optdif=1e-02, rmcnt=5, rmdif=1e-02,
+  mincv=0.001, simlev=0.99, sddif=1e-02, meandif=1e-04, 
+  rangedif=1e-04, phidif=1e-06)
+
+# Örnek 2.160: gMOIP ile LPP grafikleri
+# Kısıt matrisi, sağ taraf ve katsayıların tanımlanması
+A = matrix(c(-1, 0, 0, -1, 1, 1, 0.5, 0.7), ncol=2, byrow=TRUE)
+b = c(-40, -60, 105, 125)
+fobj = c(1200, 1150)  # Amaç fonksiyon katsayıları
+A
+b
+# gMOIP paketini kurulu değilse kur, kuruluysa yükle
+if(!require(gMOIP)){
+  install.packages("gMOIP", repo="https://cloud.r-project.org");
+  library(gMOIP)
+}
+# LP grafiğini çiz
+plotPolytope(A, b, fobj,
+  crit = "max",
+  type = rep("c", ncol(A)),
+  #nonneg = rep(FALSE, ncol(A)),
+  faces = rep("c", ncol(A)),
+  plotFaces = TRUE,
+  plotFeasible = FALSE,
+  plotOptimum = TRUE,
+  labels = "coord")
+
+# Örnek 2.161: Problem 1 için uygulama 
+# Bağımlılık: Kod 2.129
+x = c(2.25, 1.75)
+fitnessp11(x, beta=2, objective="min")
+x = c(5, 6)
+fitnessp11(x, beta=2, objective="min")
+
+# Örnek 2.162: Problem 1 için iç cezalı uyum fonksiyonu uygulaması
+# Bağımlılık: Kod 2.130
+x = c(2.25, 1.75)
+fitnessp12(x, objective="min")
+x = c(5, 6)
+fitnessp12(x, beta=2, objective="min")
+
+# Örnek 2.163: Problem 1 için logaritmik cezalı uyum uygulaması
+# Bağımlılık: Kod 2.131
+x = c(2.25, 1.75)
+fitnessp13(x, objective="min")
+x = c(5, 6)
+fitnessp13(x, beta=2, objective="min")
+
+# Örnek 2.164: Problem 1 için genişletilmiş cezalı uyum uygulaması
+# Bağımlılık: Kod 2.132
+x = c(2.25, 1.75)
+fitnessp14(x, objective="min")
+x = c(5, 6)
+fitnessp14(x, beta=2, objective="min")
+
+# Örnek 2.165: Problem 1 için statik cezalı uygulama 
+# Bağımlılık: Kod 2.133
+x = c(2.25, 1.75)
+fitnessp15(x, beta=2, objective="min")
+x = c(5, 6)
+fitnessp15(x, beta=2, objective="min")
+
+# Örnek 2.166: Problem 2 için uygulama 
+# Bağımlılık: Kod 2.134
+x = c(1,1)
+fitnessp2(x, beta=1, objective="min")
+x = c(0,0)
+fitnessp2(x, beta=2, objective="min")
+fitnessp2(x, beta=2, r=1/2, objective="min")
+
+# Örnek 2.167: Problem 3 için uygulama 
+# Bağımlılık: Kod 2.135
+x=c(7,10)
+fitnessp3(x, beta=2, objective="min")
+
+# Örnek 2.168: ILM/DHC uygulaması sonuçları
+# Bağımlılık: Kod 2.137
+N = 50
+gmax = 1000
+g = c(1, 10, 50, 100, 250, 500, 750, gmax)
+pc = ilmdhc(g=g, gmax=gmax)$pc
+pc
+nc = round(pc*N)
+nc
+pm = ilmdhc(g=g, gmax=gmax)$pm
+pm
+nm = round(pm*N)
+nm
+nm = ifelse (!nm, 1, nm)
+nm
+plot(pm, type="l", col=4, lwd=2, lty=1, 
+ xaxt="n", ylab="Oran", xlab="Kuşak")
+lines(pc, type="l", col=2, lwd=2, lty=2)
+legend("top", inset=.02, c("pm","pc"), col=c(4,2), 
+  lty=c(1,2), horiz=TRUE, cex=0.8)
+axis(1, at=1:length(g),labels=g, 
+  col.axis="red", las=2)
+
+# Örnek 2.169: optimx paketinin kurulması/yüklenmesi
+if(!require(optimx)) {install.packages("optimx", 
+   repos="https://cloud.r-project.org); library(optimx)}
+
+# Örnek 2.170: optimx çağrısı örneği
+require(optimx)
+optimx(par, fn, gr=NULL, Hess=NULL, lower=inf, upper=inf, method='', itnmax=NULL)
+
+# Örnek 2.171: optim ile optimizasyon 1
+chromosome = c(1, 1); m=length(chromosome)
+sol = stats::optim(par=chromosome, fn=fxy, 
+   method="BFGS", control=list(reltol=1e-06, maxit=1000))
+sol
+
+# Örnek 2.172: optim ile optimizasyon 2
+sol$convergence==0 
+chromosome = sol$par
+chromosome
+fitness = sol$value
+fitness
+
+# Örnek 2.173: optimx ile optimizasyon
+chromosome = c(1, 1); m=length(chromosome)
+sol = optimx::optimx(par=chromosome, fn=fxy, method="BFGS",
+   control=list(maximize=FALSE, reltol=1e-06, maxit=1000))
+sol
+sol$convcode==0 
+chromosome = sol[,paste0("p",1:m)]
+chromosome
+fitness = sol$value
+fitness
+
+# Örnek 2.174: GA'dan optim'in çağrılması
+n = 5 #Populasyon büyüklüğü 
+m = 2 #Değişken sayısı
+lb = c(-5.12, -5.12) #Örnek veri alt sınırları
+ub = c(5.12, 5.12) #Örnek veri üst sınırları
+genpop = initval(n, m, lb=lb, ub=ub) #Örnek popülasyon
+fitfunc = fxy
+fitvals = evaluate(fitfunc, genpop[,1:m])
+genpop[,"fitval"]=fitvals
+genpop
+newpop = hgaoptim(genpop, fitfunc, hgaparams, hgaftype="r", hgans=3)
+newpop
+
+# Örnek 2.175: GA'dan optimx'in çağrılması
+n = 5 #Populasyon büyüklüğü 
+m = 2 #Değişken sayısı
+lb = c(-5.12, -5.12) #Örnek veri alt sınırları
+ub = c(5.12, 5.12) #Örnek veri üst sınırları
+genpop = initval(n, m, lb=lb, ub=ub) #Örnek popülasyon
+fitfunc = fxy
+fitvals = evaluate(fitfunc, genpop[,1:m])
+genpop[,"fitval"]=fitvals
+genpop
+genpop = hgaoptimx(genpop, fitfunc, hgaparams, hgaftype="r", hgans=3)
+genpop
+
+# Örnek 2.176: ROI'nin kurulması ve yüklenmesi
+if(!require("ROI")) {install.packages ("ROI", 
+  repos = "http://cloud.r-project.org"); library(ROI)}
+
+# Örnek 2.177: ROI'nin yerel sisteme kurulması
+if(!require("ROI")){
+  install.packages("ROI",repo="http://R-Forge.R-project.org")
+  library(ROI)
+}
+
+# Örnek 2.178: ROI'de kullanılabilir paketler listesi
+ROI_available_solvers()[,1]
+
+# Örnek 2.179: ROI pluginlerini kurma örneği
+install.packages("ROI.plugin.optimx")
+install.packages("ROI.plugin.quadprog")
+
+# Örnek 2.180: Kurulu/kayıtlı ROI pluginleri listesi
+ROI_installed_solvers()
+ROI_registered_solvers()
+
+# Örnek 2.181: ROI ile problem tanımlama
+fxy = function(x) 2*(x[1]-1)^2 + 5*(x[2]-3)^2 + 10
+fo = F_objective(F=fxy, n = 2)
+vb = V_bound(li=1:2, ui=1:2, lb=c(-5, -5), ub=c(5, 5))
+op  = OP(objective=fo, bounds = vb, maximum = FALSE)
+ROI_applicable_solvers(op)
+
+# Örnek 2.182: ROI ile problem çözümü (optimx)
+sol = ROI_solve(op, start=c(1,1), solver = "optimx", 
+  control=list(method="L-BFGS-B"))
+sol
+sol$solution
+sol$objval
+
+# Örnek 2.183: ROI ile problem çözümü (nlminb)
+sol = ROI_solve(op, start=c(1,1), solver = "nlminb")
+sol
+sol$solution
+sol$objval
+
+# Örnek 2.184: İki değişkenli DP uygulaması – Adım 1
+dp = OP(objective=c(2,4),
+  L_constraint(
+  L = matrix(c(3, 2, 1, 3), nrow=2),
+  dir = c("<=", "<="),
+  rhs = c(20, 65)),
+  maximum = TRUE)
+dp
+
+# Örnek 2.185: İki değişkenli DP uygulaması – Adım 2
+sol = ROI_solve(dp, solver="glpk")
+sol
+names(sol)
+sol$solution
+
+# Örnek 2.186: ROI'nin kullanacağı argümanlar listesi 
+hgaparams = list(method="L-BFGS-B", 
+  poptim=0.05, pressel=0.5,
+  lower=lb, upper=ub,
+  control=list(maxit=100))
+
+# Örnek 2.187: GA'dan ROI'nin çağrılması
+n = 5 #Populasyon büyüklüğü 
+m = 2 #Değişken sayısı
+lb = c(-5.12, -5.12) #Örnek veri alt sınırları
+ub = c(5.12, 5.12) #Örnek veri üst sınırları
+genpop = initval(n, m, lb=lb, ub=ub) #Örnek popülasyon
+fitfunc = fxy
+fitvals = evaluate(fitfunc, genpop[,1:m])
+genpop[,"fitval"]=fitvals
+genpop
+genpop = hgaroi(genpop, fitfunc, hgaparams, 
+  hgaftype="r", hgans=3)
+genpop
+
+# Örnek 2.188: İterasyon ilerlemesi görüntüleme uygulaması
+n = 100
+genfits = matrix(NA, nrow=n, ncol=5)
+genfits[1,3] = 50
+objective = "max"
+monitorfunc = monprogress
+for(i in 1:(n-1)){
+  g=i
+  show(monitorfunc,  g=g, genfits=genfits, 
+    objective=objective, x=NULL)
+  genfits[g+1, 3] = genfits[g, 3] + runif(1, -2, 5)
+}
+fx = function(x) (cos(14.5*x-0.3) + x *(x + 0.2) + 1.01)
+curve(fx, from = -2, to=1)
+optimize(fx, interval=c(-pi, pi))
+optimize(fx, maximum=TRUE, interval=c(-pi, pi))
+
+# BÖLÜM 3 .......................................................................
+
+# Örnek 3.1a: Veriyi hazırla
+# Çalışma alanını temizlemek istenirse aşağıda # kaldırılır.
+#rm(list = ls(all=TRUE)) 
+malzeme = c("çakı", "konserve", "patates", "kahve", 
+ "uykutulum", "halat", "pusula")
+agirlik = c(1, 5, 10, 1, 7, 5, 1)
+puan = c(10, 20, 15, 2, 30, 10, 30)
+kspveri = data.frame(malzeme, agirlik, puan)
+kspveri
+
+# Örnek 3.1b: GA parametreleri ve kısıtlamayı tanımlama 
+# Bağımlılık: Örnek 3.1a
+m = nrow(kspveri)
+kapasite = 20
+
+# Örnek 3.2: Örnek malzeme setlerinin toplam puanı
+# Bağımlılık: Örnek 3.1a
+set1 = c(1, 1, 0, 0, 0, 0, 1)
+set2 = c(1, 0, 0, 0, 1, 1, 1)
+set3 = c(0, 1, 1, 1, 0, 0, 0)
+set1 %*% kspveri$puan
+set2 %*% kspveri$puan
+set3 %*% kspveri$puan
+
+# Örnek 3.3: KSP problemini GGA yöntemiyle çözme
+# Bağımlılık: Kod 3.1, 3.2b ; Örnek 3.1a, 3.1b
+n = 20
+m = nrow(kspveri)
+niter = 100
+kspGGA = adana(n=n, m=m, maxiter=niter,
+  objective="max", gatype="gga",
+  initfunc=initbin, fitfunc=kspfit2, selfunc=seltour, 
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, reps=4, repk=5, cxon=2, cxk=3, cxpc=0.8, mutpm=0.05,
+  tercrit=c(1))
+
+# Örnek 3.4: KSP problemini GGA yöntemiyle çözme (monitörlü)
+# Bağımlılık: Kod 3.1, 3.2b ; Örnek 3.1a, 3.1b
+n = 20
+m = nrow(kspveri)
+niter = 100
+kspGGA = adana(n=n, m=m, maxiter=niter,
+  objective="max", gatype="gga",
+  initfunc=initbin, fitfunc=kspfit2, selfunc=seltour, 
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, reps=4, repk=5, cxon=2, cxk=3, cxpc=0.8, 
+  mutpm=0.05, tercrit=c(1), keepbest=TRUE,
+  verbose=TRUE, monitorfunc=monprogress)
+
+# Örnek 3.5: adana nesnesi bileşenleri
+# Bağımlılık: Örnek 3.4
+names(kspGGA)
+ 
+# Örnek 3.6: Son kuşak popülasyonu (finalpop)
+# Bağımlılık: Örnek 3.4
+head(kspGGA$finalpop)
+tail(kspGGA$finalpop)
+
+# Örnek 3.7: Uyum değerlerini listeleme
+# Bağımlılık: Örnek 3.4
+genfits = kspGGA$genfits
+head(genfits,5)
+tail(genfits,5)
+
+# Örnek 3.8: En iyi çözümün gösterilmesi
+# Bağımlılık: Kod 3.3; Örnek 3.1a, 3.4
+bestsol(kspGGA)
+kspveri[kspGGA$bestsol$chromosome == 1, ]
+
+# Örnek 3.9: Kuşaklara uyum grafiği
+# Bağımlılık: Kod 3.4; Örnek 3.4
+genfits = kspGGA$genfits
+opar = par(mfrow=c(1,2))
+plotfitness(genfits, options=2)
+plotfitness(genfits, options=c(3,2,1))
+par(opar)
+
+# Örnek 3.10: GA sonlandırma ölçütlerini değiştirme
+# Bağımlılık: Kod 3.1, 3.2a, 3.3, 3.4; Örnek 3.1a, 3.1b 
+kspGGA2 = adana (n=100, m=7, maxiter=200, 
+  objective="max", gatype="gga",
+  initfunc=initbin, fitfunc=kspfit1, selfunc=seltour, 
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxpc=0.8, mutpm=0.05, reps=2,
+  tercrit=c(1, 3:4, 10:12), simlev=0.95)
+genfits = kspGGA2$genfits
+head(genfits)
+bestsol(kspGGA2)
+genfits = kspGGA2$genfits
+plotfitness(genfits)
+
+# Örnek 3.11: KSP için SSGA uygulaması
+# Bağımlılık: Kod 3.1, 3.3, 3.4; Örnek 3.1a
+kspSSGA = adana(n=20, m=7, maxiter=200, 
+  objective="max", gatype="ssga",
+  initfunc=initbin, fitfunc=kspfit1, selfunc=seltour, 
+  crossfunc=kpx, mutfunc=bitmut, replace=ssrgenitor,
+  selt=2, cxon=1, cxk=2, cxpc=0.8, mutpm=0.05, reps=2,
+  tercrit=c(1))
+head(kspSSGA$finalpop)
+tail(kspSSGA$finalpop)
+bestsol(kspSSGA)
+genfits = kspSSGA$genfits
+plotfitness(genfits, c(3,2,1))
+
+# Örnek 3.12: KSP için SSGA uygulaması 2
+# Bağımlılık: Kod 3.1, 3.2a, 3.3, 3.4; Örnek 3.1a
+kspSSGA2 = adana(n=20, m=7, maxiter=200, 
+  objective="max", gatype="ssga",
+  initfunc=initbin, fitfunc=kspfit1, selfunc=seltour, 
+  crossfunc=kpx, mutfunc=bitmut, replace=ssrgenitor,
+  selt=2, cxon=1, cxk=2, cxpc=0.8, mutpm=0.05, reps=2,
+  tercrit=c(1:4))
+bestsol(kspSSGA2)
+genfits = kspSSGA2$genfits
+plotfitness(genfits)
+
+# Örnek 3.13: GA'nın farklı başlangıç popülasyonlarıyla tekrarlanması
+# Bağımlılık: Kod 3.1, 3.2a; Örnek 3.1a
+n = 20
+m = nrow(kspveri)
+niter = 100
+R = 1000
+kspmat = matrix(NA, nrow=R, ncol=8)
+for(i in 1:R){
+  kspGGA = adana(n=n, m=m, maxiter=niter, 
+    objective="max", gatype="gga",
+    initfunc=initbin, fitfunc=kspfit1, selfunc=seltour, 
+    crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+    selt=2, cxon=2, cxk=3, reps=4, mutpm=0.05, 
+    tercrit=c(1), monitorfunc=monprogress)
+  kspmat[i,] = kspGGA$genfits[nrow(kspGGA$genfits),]
+}
+
+# Örnek 3.14. Çözümlerin incelenmesi
+# Bağımlılık: Örnek 3.13
+table(kspmat[,2])
+prop.table(table(kspmat[,2]))
+hist(kspmat[,2], col="orange", prob=FALSE,
+ xlab="Çözüm Değeri", ylab="Frekans",
+ main="Optimal Çözümler Histogramı")
+
+# Örnek 3.15: optim parametrelerinin tanımlanması
+hgaparams = list(method="L-BFGS-B", lower=0, upper=120, 
+  poptim=0.05, pressel=0.5,
+  control = list(fnscale=-1, maxit=10))
+
+# Örnek 3.16: adana+optim ile melez GA uygulaması
+# Bağımlılık: Kod 3.1, 3.2b, 3.3, 3.4, 3.5; Örnek 3.1a, 3.15
+kspHGGA = adana(n=20, m=7, maxiter=100, 
+  objective="max", gatype="gga",
+  initfunc=initbin, fitfunc=kspfit2, selfunc=seltour, 
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism, 
+  selt=2, cxon=2, cxk=3, reps=4, mutpm=0.05, 
+  hgafunc=hgaoptim, hgastep=5, hgans=2, hgaftype="r", 
+  tercrit=c(1:4), monitorfunc=monprogress)
+bestsol(kspHGGA)
+genfits = kspHGGA$genfits
+plotfitness(genfits, c(3,2,1))
+
+# Örnek 3.17: Uzaklık matrisinin hazırlanması
+setwd("C:/gabook")
+distmat = read.table("illermesafe.txt", head=F)
+sehirler = c("Adana","Ankara","Eskişehir", 
+  "Kayseri", "Konya","Niğde")
+colnames(distmat) = sehirler
+rownames(distmat) = sehirler
+distmat
+
+# Örnek 3.18: adana ile TSP optimizasyonu uygulaması
+# Bağımlılık: Kod 3.1, 3.7, Örnek: 3.17
+n = 100
+m = length(sehirler)
+niter = 200
+tspGGA = adana(n=n, m=m, maxiter=niter, 
+  objective="min", gatype="gga",
+  initfunc=initperm, fitfunc=tspfit, selfunc=seltour, 
+  crossfunc=pmx, mutfunc=swapmut, replace=elitism,
+  permset=1:m, selt=2, reps=2, cxon=2, cxpc=0.85, 
+  mutpm=0.05, mutb=2, keepbest=TRUE, tercrit=c(1:4),
+  monitorfunc=monprogress)
+
+# Örnek 3.19: En iyi sonuçların görülmesi
+# Bağımlılık: Kod 3.3, 3.4, Örnek: 3.18
+tspGGA$bestsol
+bestsol(tspGGA)
+sehirler[tspGGA$bestsol$chromosome]
+tur=tspGGA$bestsol$chromosome
+tur
+plotfitness(tspGGA$genfits)
+
+# Örnek 3.20: Rota grafiği çizme
+# Bağımlılık: Kod 3.9; Örnek: 3.18
+route = tspGGA$bestsol$chromosome
+plotroute(route, distmat)
+
+# Örnek 3.21: TSP için R tekrarlı MC denemesi
+# Bağımlılık: Kod 3.1, Örnek: 3.17
+n = 20
+m = length(sehirler)
+niter = 100
+R=1000
+tspmat = matrix(NA, nrow=R, ncol=8)
+for(i in 1:R){
+  tspGGA = adana(n=n, m=m, maxiter=niter, 
+    objective="min", gatype="gga",
+    initfunc=initperm, fitfunc=tspfit, selfunc=seltour, 
+    crossfunc=pmx, mutfunc=swapmut, replace=elitism,
+    permset=1:m, selt=2, reps=2, cxon=2, cxpc=0.85, 
+    mutpm=0.05, mutb=2, keepbest=TRUE, 
+    tercrit=c(1), monitorfunc=monprogress)
+  tspmat[i,] = tspGGA$genfits[nrow(tspGGA$genfits),]
+}
+table(tspmat[,2])
+prop.table(table(tspmat[,2]))
+hist(tspmat[,2], col="orange", prob=FALSE,
+ xlab="Çözüm Değeri", ylab="Frekans",
+ main="Çözüm Değerleri Histogramı")
+
+# Örnek 3.22: Başlangıç popülasyonunda toplam mesafe
+# Bağımlılık: Kod 3.7, 3.9; Örnek: 3.17
+distmat = as.matrix(distmat)
+ns = nrow(distmat)
+set.seed(12)
+initroute = c(sample(1:ns, size=ns, replace=FALSE))
+routetotal(initroute)
+plotroute(initroute, distmat)
+
+# Örnek 3.23: optim'de SANN ile kombinatorik TSP optimizasyonu
+set.seed(12) 
+tspSANN = optim(par=initroute, fn=routetotal,
+ gr=changeroute, method="SANN",
+ control=list(maxit=2000, temp=1000, 
+ trace=TRUE, REPORT = 1000))
+
+# Örnek 3.24: optim SANN sonuçlarının görüntülenmesi
+# Bağımlılık: Kod 3.4; Örnek 3.23
+tspSANN  
+plotroute(tspSANN$par, distmat)
+
+# Örnek 3.25: optim parametrelerini tanımlama 
+hgaparams = list(method="SANN", 
+    control=list(maxit=20000, temp=1000, trace=FALSE))
+
+# Örnek 3.26: adana + optim-SANN melez GA uygulaması
+# Bağımlılık: Kod 3.1, 3.12 ; Örnek 3.17, 3.25
+n=20
+niter=100
+m=length(sehirler)
+tspHGGA = adana(n=n, m=m, maxiter=niter, 
+  objective="min", gatype="gga",
+  initfunc=initperm, fitfunc=tspfit, selfunc=seltour, 
+  crossfunc=pmx, mutfunc=swapmut, replace=elitism,
+  permset=1:m, selt=2, cxon=2, cxpc=0.9, 
+  mutpm=0.05, mutb=2, reps=2,
+  hgafunc=hgaoptim2, hgaftype="w", hgans=2, hgastep=5,
+  monitorfunc=monprogress, tercrit=c(1:4))
+
+# Örnek 3.27: adana + optim-SANN melez GA sonuçları
+# Bağımlılık: Kod 3.4, 3.9; Örnek 3.26
+bestsol(tspHGGA)
+opar=par(mfrow=c(2,1))
+plotfitness(tspHGGA$genfits)
+plotroute(tspHGGA$bestsol$chromosome, distmat)
+par(opar)
+
+# Örnek 3.28: Farklı popülasyon büyüklüklerine göre karşılaştırma
+# Bağımlılık: Kod 3.1, 3.13
+perfitems = c(5, 10, 20, 30, 50, 100, 200, 500, 750, 1000)
+permat = matrix(NA, nrow=length(perfitems), ncol=11)
+rownames(permat) = c("5", "10", "20", "30", "50",
+   "100", "200", "500", "750", "1000")
+colnames(permat)= c("min", "max", "mean", "sd", 
+   "Q1","Q2","Q3", "cv%","iters", "ctime","sc")
+lb = c(-5.12, -5.12); ub = c(5.12, 5.12)
+mutmy = c(0.5,0.5); mutsdy = c(0.30, 0.30)
+m=length(lb)
+i=1
+for(n in perfitems){
+   ptime = Sys.time()
+   set.seed(5)
+   garesult = adana(n=n, m=m,
+      maxiter=500, objective="min", gatype="gga",
+      initfunc=initval, fitfunc=rosenbrock, 
+      selfunc=seltour, crossfunc=wax, mutfunc=nunimut,
+      replace=elitism, monitorfunc=monprogress,
+      lb=lb, ub=ub, mutmy=mutmy, mutsdy=mutsdy,
+      selt=2, cxon=2, tercrit=c(1))
+   genfits = garesult$genfits
+   if(is.matrix(genfits)){
+     permat[i, 1:8] = genfits[nrow(genfits),]
+     permat[i, 9] = nrow(genfits)
+   }else{
+     permat[i, 1:8] = genfits
+     permat[i, 9] = 0
+   }
+   ptime = as.difftime(Sys.time()-ptime, units="secs")
+   ptime = as.numeric(ptime, units = "secs")
+   permat[i, 10] = ptime
+   permat[i, 11] = garesult$tcode
+   i=i+1
+}
+
+# Örnek 3.29: Popülasyon büyüklüğüne göre çözümler
+# Bağımlılık: Örnek 3.27
+round(t(permat),2)
+
+# Örnek 3.30: Popülasyon büyüklüğüne göre çözümler 1
+# Bağımlılık: Kod 3.14; Örnek 3.27
+plotcompare(permat, idx=2)
+
+# Örnek 3.31: Popülasyon büyüklüğüne göre çözümler 2
+# Bağımlılık: Kod 3.14; Örnek 3.27
+plotcompare(permat, c(1:4))
+
+# Örnek 3.32: Farklı iterasyon sayılarına göre karşılaştırma
+# Bağımlılık: Kod 3.1, 3.13
+perfitems = c(5, 10, 20, 50, 100, 500, 1000, 10000)
+permat = matrix(NA, nrow=length(perfitems), ncol=11)
+rownames(permat) = c("5", "10", "20", "50", 
+  "100", "500", "1000", "10000")
+colnames(permat)= c("min", "max", "mean", "sd", 
+  "Q1","Q2","Q3", "cv%","iters", "ctime","sc")
+lb=c(-5.12, -5.12); ub=c(5.12, 5.12)
+mutmy=c(0.5,0.5); mutsdy=c(0.30, 0.30)
+n = 100; m=length(lb)
+set.seed(5)
+initpop = initval(n, m, type=2)
+i=1
+for(iter in perfitems){
+   ptime = Sys.time()
+   garesult = adana(n=n, m=m, prevpop=initpop,
+      maxiter=iter, objective="min", gatype="gga",
+      initfunc=initval, fitfunc=rosenbrock, 
+      selfunc=seltour, crossfunc=wax, mutfunc=nunimut,
+      replace=elitism, monitorfunc=monprogress,
+      lb=lb, ub=ub, mutmy=mutmy, mutsdy=mutsdy,
+      selt=2, cxon=2, tercrit=c(1))
+   genfits = garesult$genfits
+   if(is.matrix(genfits)){
+     permat[i, 1:8] = genfits[nrow(genfits),]
+     permat[i, 9] = nrow(genfits)
+   }else{
+     permat[i, 1:8] = genfits
+     permat[i, 9] = 0
+   }
+   ptime = as.difftime(Sys.time()-ptime, units="secs")
+   ptime = as.numeric(ptime, units = "secs")
+   permat[i, 10] = ptime
+   permat[i, 11] = garesult$tcode
+   i=i+1
+}
+
+# Örnek 3.33: Maksimum iterasyon sayısına göre çözümler
+# Bağımlılık: Kod 3.14; Örnek 3.31
+round(t(permat),2)
+# Maksimum iterasyon sayısına göre çözüm grafikleri
+plotcompare(permat, c(1:4))
+
+# Örnek 3.34: Farklı çaprazlama işleçlerini karşılaştırma
+# Bağımlılık: Kod 3.1, 3.13
+perfitems = c(wax, lax, ax, bx)
+permat = matrix(NA, nrow=length(perfitems), ncol=11)
+rownames(permat) = c("wax","lax","ax", "bx")
+colnames(permat)= c("min", "max", "mean", "sd", 
+  "Q1","Q2","Q3", "cv%","iters", "ctime","sc")
+lb = rep(-5.12, 2); ub = rep(5.12, 2)
+mutmy = rep(0.5, 2); mutsdy = rep(0.3, 2)
+n = 100; m = length(lb)
+set.seed(5)
+initpop=initval(n, m, type=2)
+i=1
+for(j in 1:length(perfitems)){
+    ptime = Sys.time()
+    garesult = adana(prevpop=initpop, n=n, m=m,
+      maxiter=1500, objective="min", gatype="gga",
+      initfunc=initval, fitfunc=rosenbrock, selfunc=seltour, 
+      crossfunc=perfitems[[j]], mutfunc=nunimut, replace=elitism, 
+      lb=lb, ub=ub, mutmy=mutmy, mutsdy=mutsdy, selt=2, cxon=2, 
+      tercrit=c(1), monitorfunc=monprogress)
+   genfits = garesult$genfits
+   if(is.matrix(genfits)){
+     permat[i, 1:8] = genfits[nrow(genfits),]
+     permat[i, 9] = nrow(genfits)
+   }else{
+     permat[i, 1:8] = genfits
+     permat[i, 9] = 0
+   }
+   ptime = as.difftime(Sys.time()-ptime, units="secs")
+   ptime = as.numeric(ptime, units = "secs")
+   permat[i, 10] = ptime
+   permat[i, 11] = garesult$tcode
+   i=i+1
+}
+
+# Örnek 3.35: Kullanılan çaprazlama işleçlerine göre çözümler
+# Bağımlılık: Kod 3.14; Örnek 3.33
+round(t(permat), 2)
+# Çaprazlama yöntemlerini karşılaştırma grafiği
+plotcompare(permat, c(1:4))
+
+# Örnek 3.36: Farklı mutasyon yöntemlerini karşılaştırma
+# Bağımlılık: Kod 3.1, 3.13
+perfitems = c(randmut, randmut2, randmut3, nunimut, nunimut2)
+permat = matrix(NA, nrow=length(perfitems), ncol=11)
+rownames(permat) = c("randmut","randmut2","randmut3",
+  "nunimut", "nunimut2")
+colnames(permat)= c("min", "max", "mean", "sd", 
+  "Q1","Q2","Q3", "cv%","iters", "ctime","sc")
+lb = rep(-5.12, 3); ub = rep(5.12, 3)
+mutmy = rep(0.5, 3); mutsdy = rep(0.3, 3)
+n = 100; m = length(lb)
+set.seed(3)
+initpop=initval(n, m, type=2)
+i=1
+for(j in 1:length(perfitems)){
+    ptime = Sys.time()
+    garesult = adana(prevpop=initpop, n=n, m=m,
+      maxiter=1500, objective="min", gatype="gga",
+      initfunc=initval, fitfunc=rosenbrock, selfunc=seltour, 
+      crossfunc=wax, mutfunc=perfitems[[j]], replace=elitism, 
+      lb=lb, ub=ub, mutmy=mutmy, mutsdy=mutsdy, selt=2, cxon=2, 
+      tercrit=c(1), monitorfunc=monprogress)
+   genfits = garesult$genfits
+   if(is.matrix(genfits)){
+     permat[i, 1:8] = genfits[nrow(genfits),]
+     permat[i, 9] = nrow(genfits)
+   }else{
+     permat[i, 1:8] = genfits
+     permat[i, 9] = 0
+   }
+   ptime = as.difftime(Sys.time()-ptime, units="secs")
+   ptime = as.numeric(ptime, units = "secs")
+   permat[i, 10] = ptime
+   permat[i, 11] = garesult$tcode
+   i=i+1
+}
+
+# Örnek 3.37: Kullanılan mutasyon işleçlerine göre çözümler
+# Bağımlılık: Kod 3.14; Örnek 3.35
+round(t(permat), 2)
+# İşleç performanslarını karşılaştırma grafiği
+plotcompare(permat, c(1:4))
+
+# Örnek 3.38: Farklı yenileme tekniklerini karşılaştırma
+# Bağımlılık: Kod 3.1, 3.13
+perfitems = c(elitism, grmuplambda, grmuvlambda, grrobin)
+permat = matrix(NA, nrow=length(perfitems), ncol=11)
+rownames(permat) = c("elitism", "grmuplambda",
+  "grmuvlambda", "grrobin")
+colnames(permat)= c("min", "max", "mean", "sd",
+  "Q1","Q2","Q3", "cv%","iters", "ctime","sc")
+lb=c(-5.12, -5.12); ub=c(5.12, 5.12)
+mutmy=c(0.5,0.5); mutsdy=c(0.30, 0.30)
+n = 100; m=length(b)
+set.seed(9)
+initpop=initval(n, m, type=2)
+i=1
+for(j in 1:length(perfitems)){
+    ptime = Sys.time()
+    garesult = adana(prevpop=initpop,n=n, m=m,
+      maxiter=100, objective="min", gatype="gga",
+      initfunc=initval, fitfunc=rosenbrock, 
+      selfunc=seltour, crossfunc=wax,
+      mutfunc=randmut, replace=perfitems[[j]], 
+      lb=lb, ub=ub, mutmy=mutmy, mutsdy=mutsdy,
+      selt=2, cxon=2, tercrit=c(1))
+   genfits = garesult$genfits
+   if(is.matrix(genfits)){
+     permat[i, 1:8] = genfits[nrow(genfits),]
+     permat[i, 9] = nrow(genfits)
+   }else{
+     permat[i, 1:8] = genfits
+     permat[i, 9] = 0
+   }
+   ptime = as.difftime(Sys.time()-ptime, units="secs")
+   ptime = as.numeric(ptime, units = "secs")
+   permat[i, 10] = ptime
+   permat[i, 11] = garesult$tcode
+   i=i+1
+}
+
+# Örnek 3.39: Yenileme yöntemlerine göre çözümler
+# Bağımlılık: Kod 3.14; Örnek 3.37
+round(t(permat),2)
+# Yenileme yönt. performanslarını karşılaştırma grafiği
+plotcompare(permat, c(1:4))
+
+# Örnek 3.40: Uyarlama algoritmalarını karşılaştırma
+# Bağımlılık: Kod 3.1, 3.13
+lb = c(-5.12, -5.12); ub = c(5.12, 5.12)
+n = 50; m = 2; niter = 100; R=10
+perfitems = c(fixpcmut,leitingzhi, adana3, ilmdhc, adana1, adana2)
+permat = matrix(NA, nrow=length(perfitems), ncol=11)
+perarr = array(NA, dim=c(length(perfitems), 11, R))
+rownames(permat) = c("noadapt","leitingzhi", "adana3", 
+  "ilmdhc", "adana1", "adana2")
+colnames(permat)= c("min", "max", "mean", "sd", 
+  "Q1","Q2","Q3","cv%","iters", "ctime","sc")
+for(k in 1:R){
+  #set.seed(2*k+k)
+  initpop=initval(n, m, type=2)
+  i=1
+  for(j in 1:length(perfitems)){
+    ptime = Sys.time()
+    garesult = adana(prevpop=initpop,n=n, m=m, maxiter=niter, 
+      objective="min", gatype="gga",
+      initfunc=initval, fitfunc=rosenbrock, selfunc=seltour, 
+      crossfunc=wax, mutfunc=nunimut, replace=elitism,
+      adapfunc=perfitems[[j]], monitorfunc=monprogress,
+      lb=lb, ub=ub, selt=2,
+      cxon=2, cxpc=0.9, cxpc2=0.8, mutpm=0.05, mutpm2=0.2, mutb=2,
+      adapa=0.50, adapb=0.75, adapc=0.2, adapd=0.05, 
+      reps=1, bestdif=0.001,
+      tercrit=c(1), keepbest=TRUE)
+    genfits = garesult$genfits
+    if(is.matrix(genfits)){
+      permat[i, 1:8] = genfits[nrow(genfits),]
+      permat[i, 9] = garesult$bestsol$generation
+    }else{
+      permat[i, 1:8] = genfits
+      permat[i, 9] = 0
+    }
+    ptime = as.difftime(Sys.time()-ptime, units="secs")
+    ptime = as.numeric(ptime, units = "secs")
+    permat[i, 10] = ptime
+    permat[i, 11] = garesult$tcode
+    i=i+1
+  }
+  perarr[,,k]=permat
+}
+for(i in 1:nrow(permat))
+  for(j in 1:ncol(permat))
+    permat[i,j]=mean(perarr[i,j,])
+
+# Örnek 3.41: Uyarlama algoritmalarına göre çözümler
+# Bağımlılık: Kod 3.14; Örnek 3.39
+round(permat,2)
+# Uyarlama algoritmalarını karşılaştırma grafiği
+plotcompare(permat, c(1:4))
+
+# Örnek 3.42: Değişken sayısı (kromozom uzunluğu) göre karşılaştırma
+# Bağımlılık: Kod 3.1, 3.13
+Lb = rep(-5.12, 6); Ub = rep(5.12, 6)
+n = 200; niter = 200; R=50
+perfitems = c(2:6)
+permat = matrix(NA, nrow=length(perfitems), ncol=11)
+perarr = array(NA, dim=c(length(perfitems), 11, R))
+rownames(permat) = c("2","3", "4", "5", "6")
+colnames(permat)= c("min", "max", "mean", "sd", 
+  "Q1","Q2","Q3","cv%","iters", "ctime","sc")
+for(k in 1:R){
+  i=1
+  for(j in 1:length(perfitems)){
+    ptime = Sys.time()
+    lb=Lb[1:perfitems[j]]
+    ub=Ub[1:perfitems[j]]
+    m = length(lb)  
+    garesult = adana(n=n, m=m, maxiter=niter, 
+      objective="min", gatype="gga",
+      initfunc=initval, fitfunc=rosenbrock, selfunc=seltour, 
+      crossfunc=wax, mutfunc=nunimut, replace=elitism,
+      adapfunc=ilmdhc, monitorfunc=monprogress,
+      lb=lb, ub=ub, selt=2,
+      cxon=2, cxpc=0.9, cxpc2=0.8, mutpm=0.05, mutpm2=0.2, mutb=2,
+      adapa=0.5, adapb=0.75, reps=1, bestdif=0.001,
+      tercrit=c(1), keepbest=TRUE)
+    genfits = garesult$genfits
+    if(is.matrix(genfits)){
+      permat[i, 1:8] = genfits[nrow(genfits),]
+      permat[i, 9] = garesult$bestsol$generation
+    }else{
+      permat[i, 1:8] = genfits
+      permat[i, 9] = 0
+    }
+    ptime = as.difftime(Sys.time()-ptime, units="secs")
+    ptime = as.numeric(ptime, units = "secs")
+    permat[i, 10] = ptime
+    permat[i, 11] = garesult$tcode
+    i=i+1
+  }
+  perarr[,,k] = permat
+}
+
+# Örnek 3.43: Değişken sayısına göre çözümler
+# Bağımlılık: Kod 3.14; Örnek 3.41
+for(i in 1:nrow(permat))
+  for(j in 1:ncol(permat))
+    permat[i,j]=mean(perarr[i,j,])
+round(permat,2)
+# Değişken sayısına göre karşılaştırma grafiği
+plotcompare(permat, c(1:4))
+
+# Örnek 3.44: Rosenbrock test fonksiyonu test uygulaması
+# Bağımlılık: Kod 3.15
+x1 = runif(100, -5.12, 5.12)
+x2 = runif(100, -5.12, 5.12)
+x3 = runif(100, -5.12, 5.12)
+x = unname(cbind(x1,x2,x3))
+head(x, 3)
+rosenbrock(x[1,])
+rosenbrock(x[2,])
+
+# Örnek 3.45: 3B Rosenbrock test fonksiyonu grafiği
+# Bağımlılık: Kod 3.15
+x = seq(-5.12, 5.12, by=0.1)
+y = seq(-5.12, 5.12, by=0.1)
+z = outer(x, y, rosenbrock)
+z[is.na(z)] = 1
+persp(x, y, z, 
+  theta=30, phi=30, expand=0.5, col="green",
+  ltheta=90, shade=0.70, ticktype="detailed", d=5, r=1)
+
+# Örnek 3.46: 3B Rosenbrock fonksiyonu grafiği
+# Bağımlılık: Kod 3.16; Örnek 3.44
+if(!require(plot3D)) {install.packages("plot3D",
+  repo="cloud.r-project.org"); library(plot3D)}
+persp3D (x, y, z, phi=40, theta=50, expand=0.5,  
+  colvar=z, col=ml.colors(256), Nacol="red", breaks=NULL,
+  border=NA, facets=TRUE, colkey=FALSE, resfac=1,
+  image=FALSE, contour=FALSE, panel.first=NULL,
+  clim=NULL, clab=NULL, bty="b", 
+  lighting=FALSE, shade=FALSE, ltheta= -135, lphi=0,
+  inttype=2, curtain=FALSE, add=FALSE, plot=TRUE)
+
+# Örnek 3.47: Rosenbrock fonksiyonu görüntüsü
+# Bağımlılık: Kod 3.16; Örnek 3.44
+opar = par(mfrow=c(2,2))
+image(x,y,z, col=ml.colors(256))
+image(x,y,z, col=topo.colors(256))
+image(x,y,z, col=terrain.colors(256))
+image(x,y,z, col=gray.colors(256))
+par(opar)
+
+# Örnek 3.48: Rosenbrock yüzey eşyükselti eğrileri grafiği 1
+# Bağımlılık: Kod 3.16; Örnek 3.44
+image(x, y, z, col=ml.colors(256))
+contour(x, y, z, col="white", method="edge",
+  vfont=c("sans serif", "plain"), add=TRUE)
+
+# Örnek 3.49: Rosenbrock eşyükselti eğrileri grafiği 2
+# Bağımlılık: Kod 3.16; Örnek 3.44
+filled.contour(x, y, z, color.palette = ml.colors)
+
+# Örnek 3.50: Rastrigin fonksiyonu kullanımı
+# Bağımlılık: Kod 3.17
+x = y = seq(-5.12, 5.12, by=0.1)
+population = cbind(x, y)
+head(population, 3)
+rastrigin(population[1,])
+rastrigin(population[3,])
+z = outer(population[,1], population[,2], rastrigin)
+
+# Örnek 3.51: 3B Rastrigin grafiği (ml.colors paleti ile)
+# Bağımlılık: Kod 3.16, 3.17; Örnek 3.49
+if(!require(plot3D)) {install.packages("plot3D",
+  repo="cloud.r-project.org"); library(plot3D)}
+persp3D (x, y, z, phi=40, theta=50, expand=0.5,  
+  colvar=z, col=ml.colors(256), Nacol="red",
+  breaks=NULL, border=NA, facets=TRUE, colkey=FALSE,
+  resfac=1, image=FALSE, contour=FALSE, panel.first=NULL,
+  clim=NULL, clab=NULL, bty="b", 
+  lighting=FALSE, shade=FALSE, ltheta=-135, lphi=0,
+  inttype=2, curtain=FALSE, add=FALSE, plot=TRUE)
+
+# Örnek 3.52: Rastrigin fonksiyonu eşyükselti eğrileri grafiği
+# Bağımlılık: Kod 3.16; Örnek 3.49
+image(x, y, z, col=ml.colors(256))
+contour(x, y, z, col="white", method="edge",
+   vfont=c("sans serif", "plain"), add=TRUE)
+
+# Örnek 3.53: Rastrigin fonksiyonu 3B ve eşyükselti birleşik grafiği
+# Bağımlılık: Kod 3.16; Örnek 3.49
+persp3D (x, y, z, phi=20, theta=40, expand=0.5,  
+  colvar=z, col=ml.colors(256), Nacol="red",
+  breaks=NULL, border=NA, facets=TRUE, colkey=TRUE,
+  resfac=1, image=TRUE, contour=TRUE, panel.first=NULL,
+  clim=NULL, clab="anahtar", bty="b", 
+  lighting=FALSE, shade=FALSE, ltheta=90, lphi=40,
+  inttype=2, curtain=FALSE, add=FALSE, plot=TRUE)
+
+# Örnek 3.54: Himmelblau test fonksiyonu test uygulaması
+# Bağımlılık: Kod 3.18
+x = y = seq(-5.12, 5.12, by=0.1)
+population = cbind(x, y)
+head(population, 3)
+himmelblau(population[1,])
+himmelblau(population[3,])
+z = outer(population[,1], population[,2], himmelblau)
+
+# Örnek 3.55: 3B Himmelblau grafiği (ml.colors paleti ile)
+# Bağımlılık: Kod 3.16; Örnek 3.53
+if(!require(plot3D)) {install.packages("plot3D",
+  repo="cloud.r-project.org"); library(plot3D)}
+persp3D (x, y, z, phi=20, theta=-40, expand=0.5,  
+  colvar=z, col=ml.colors(256), Nacol="red",
+  breaks=NULL, border=NA, facets=TRUE, colkey=FALSE,
+  resfac=1, image=FALSE, contour=FALSE, panel.first=NULL,
+  clim=NULL, clab=NULL, bty="b", 
+  lighting=FALSE, shade=FALSE, ltheta=-135, lphi=0,
+  inttype=2, curtain=FALSE, add=FALSE, plot=TRUE)
+
+# Örnek 3.56: Himmelblau fonksiyonu 3B grafiği
+# Bağımlılık: Kod 3.18
+if(!require(lattice)){
+  install.packages("lattice",  
+  repo="https://cloud.r-project.org"); library(lattice)
+}
+x = seq(-5.12, 5.12, by=0.1)
+y = seq(-5.12, 5.12, by=0.1)
+gridxy = as.matrix(expand.grid(x, y))
+z = himmelblau(gridxy[,1], gridxy[,2])
+dfxyz = data.frame(z, gridxy)
+colnames(dfxyz) = c("z", "x", "y")
+lattice::wireframe(z ~ x*y, data=dfxyz, 
+  shade=TRUE, drape=FALSE, 
+  scales=list(arrows=FALSE),
+  screen=list(x=-40, y=-20, z=-30))
+
+# Örnek 3.57: Himmelblau fonksiyonu yüzey eşyükselti eğrileri grafiği
+x = seq(-5.12, 5.12, by=0.1)
+y = seq(-5.12, 5.12, by=0.1)
+z = outer(x,y, himmelblau) 
+image(x, y, z, col=gray.colors(256))
+contour(x, y, z, col="white", method="edge",
+  vfont=c("sans serif", "plain"), add=TRUE)
+
+# Örnek 3.58: adagio paketindeki test fonksiyonları
+if(!require(adagio)) {install.packages("adagio", 
+  repo="https://cloud.r-project.org"); require(adagio)}
+set.seed(12)
+x = runif(5)
+x
+fnRosenbrock(x) 
+grRosenbrock(x)
+fnHald(x)
+grHald(x)
+
+# Örnek 3.59: TestFunctions paketindeki test fonksiyonları
+if(!require(TestFunctions)) {install.packages("TestFunctions", 
+  repo="https://cloud.r-project.org"); require(TestFunctions)}
+set.seed(12)
+x = runif(5)
+x
+TF_rastrigin(x)
+TF_ackley(x, a=20, b=0.2, c=2*pi)
+TF_ackley(x=c(-20,30), a=20, b=0.2, c=10)
+TF_michalewicz(x, m=2)
+TF_michalewicz(x, m=10)
+
+# Örnek 3.60: globalOptTests paketi kurulması ve kullanılması
+if(!require(globalOptTests)) 
+  {install.packages("globalOptTests", 
+   repo="https://cloud.r-project.org");
+   require(globalOptTests)}
+set.seed(12)
+x = runif(5)
+x
+goTest(x, "Rosenbrock", checkDim=FALSE) 
+goTest(x, "Wood", checkDim=FALSE) 
+x = c(1,1,1)
+goTest(x, "Rosenbrock", checkDim=FALSE) 
+
+# Örnek 3.61: Test fonksiyonlarıyla ilgili bilgiler
+# Bağımlılık: Örnek 3.59
+get(x, "Rosenbrock", checkDim=FALSE) 
+getDefaultBounds("Rosenbrock")
+getProblemDimen("Rosenbrock")
+getGlobalOpt("Rosenbrock")
+getDefaultBounds("Wood")
+getProblemDimen("Wood")
+getGlobalOpt("Wood")
+
+# Örnek 3.62: smoof paketi kurulması ve kullanılması
+if(!require(smoof)) 
+  {install.packages("smoof", 
+   repo="https://cloud.r-project.org");
+   require(smoof)}
+set.seed(12)
+x1 = runif(10,-5,5)
+x2 = runif(10,-5,5)
+xdf = data.frame(x1,x2)
+objval = matrix(NA, nrow=nrow(xdf), ncol=1)
+fn = makeHimmelblauFunction()
+for(i in 1:nrow(xdf)){
+  objval[i,] = fn(xdf[i,])
+}
+objval
+
+# Örnek 3.63: 2B grafik uygulaması
+if(!require(smoof)) 
+  {install.packages("smoof", 
+   repo="https://cloud.r-project.org");
+   require(smoof)}
+if(!require(ggplot2)) 
+  {install.packages("ggplot2", 
+   repos="https://cloud.r-project.org");
+   require(ggplot2)}
+fn = makeHimmelblauFunction()
+par(ask=TRUE)
+print(autoplot(fn))
+print(autoplot(fn, render.levels=TRUE, render.contours=FALSE))
+print(autoplot(fn,  roj.optimum=TRUE))
+par(ask=FALSE)
+
+# Örnek 3.64: 3B grafik uygulaması
+if(!require(plot3D)) 
+  {install.packages("plot3D", 
+   repos="https://cloud.r-project.org");
+   require(plot3D)}
+par(ask=TRUE)
+plot3D(fn)
+plot3D(fn, contour=TRUE)
+plot3D(fn, image=TRUE, phi=0)
+par(ask=FALSE)
+
+# Örnek 3.65: Etkileşimli görselleştirme uygulaması
+# Bağımlılık: Örnek: 3.62
+if(!require(plotly)) 
+  {install.packages("plotly", 
+   repo="https://cloud.r-project.org");
+   require(plotly)}
+plot3D(fn, package="plotly")
+
+# Örnek 3.66: smoof paketindeki fonksiyonlar için grup etiketleri
+# Bağımlılık: Örnek: 3.62
+getAvailableTags()
+   
+# Örnek 3.67: smoof paketindeki test fonksiyonlarını listeleme
+# Bağımlılık: Örnek: 3.62
+# Tek tepeli (unimodal) test fonksiyonları
+filterFunctionsByTags("unimodal")
+# Tek tepeli (unimodal) ve ayırılabilir test fonksiyonları
+filterFunctionsByTags(c("unimodal", "separable"))
+# Çok tepeli (multimodal) ve türevlenebilir fonksiyonlar
+filterFunctionsByTags(c("multimodal", "differentiable"), or=FALSE)
+# Tüm fonksiyonlar
+filterFunctionsByTags(c("unimodal","multimodal"), or=TRUE)
+
+# Örnek 3.68: smoof paketindeki diğer fonksiyonlar
+# Bağımlılık: Örnek: 3.62
+fn2 = makeRastriginFunction(dimensions=2L)
+fn3 = makeMichalewiczFunction(dimensions=2L, m=10)
+getGlobalOptimum(fn2)
+getGlobalOptimum(fn3)
+
+# Örnek 3.69: fnkarisik fonksiyonunun görsel olarak incelenmesi
+# Bağımlılık: Kod 3.21
+pl = autoplot(fnkarisik)
+print(pl)
+pl + ggtitle("4 Parametreli Fonks.") + 
+  theme(legend.position= "none")
+
+# Örnek 3.70: Standart GGA başarım testi
+# Bağımlılık: Kod 3.1
+# Uyum fonksiyonlarının oluşturulması
+if(!require(smoof)) 
+  {install.packages("smoof", 
+   repos="https://cloud.r-project.org");
+   require(smoof)}
+fn1 = makeRosenbrockFunction(dimensions=2L)
+fn2 = makeRastriginFunction(dimensions=2L)
+fn3 = makeHimmelblauFunction()
+fn4 = makeBukinN6Function()
+fn5 = makeMichalewiczFunction(dimensions=2L, m=10)
+fn6 = makeJennrichSampsonFunction()
+fn7 = makeBoothFunction()
+fn8 = makeAckleyFunction(dimensions=2L)
+perfitems = c(fn1, fn2, fn3, fn4, fn5, fn6, fn7, fn8)
+# Parametrelerin ayarlanması
+lb = c(-35, -35); ub = c(35, 35)
+n = 100; m = 2
+niters = 100
+R = 50 # GA tekrar sayısı
+# Global optimum vektörünün oluşturulması 
+fgopt = c() 
+fgopt[1] = getGlobalOptimum(fn1)$value
+fgopt[2] = getGlobalOptimum(fn2)$value
+fgopt[3] = getGlobalOptimum(fn3)$value
+fgopt[4] = getGlobalOptimum(fn4)$value
+fgopt[5] = getGlobalOptimum(fn5)$value
+fgopt[6] = getGlobalOptimum(fn6)$value
+fgopt[7] = getGlobalOptimum(fn7)$value
+fgopt[8] = getGlobalOptimum(fn8)$value
+goptconv = 1e-03 # Yakınsama toleransı
+fgoptdif = ifelse(fgopt==0, goptconv, abs(fgopt * goptconv))
+# Sonuç nesnelerinin tanımlanması
+permat = matrix(0, nrow=length(perfitems), ncol=12)
+rownames(permat) = c("Ros","Rast","Him", "BukN6",
+  "Mic", "Jen", "Booth", "Ack")
+colnames(permat)= c("Min", "Max", "Mean", "SD", 
+  "Q1","Q2","Q3", "CV%","Itrs", "Ctime","NCGO", "SC")
+perarr = array(NA, dim=c(length(perfitems), 12, R))
+# Monte Carlo denemesinin başlatılması
+for(k in 1:R){
+  i = 1
+  initpop = initval(n, m, type=2)
+  for(j in 1:length(perfitems)){
+    ptime = Sys.time()
+    garesult = adana(n=n, m=m, maxiter=niters,
+      objective="min", gatype="gga",
+      initfunc=initval, lb=lb, ub=ub, prevpop=initpop,
+      fitfunc=perfitems[[j]], selfunc=seltour, 
+      crossfunc=wax, mutfunc=nunimut, replace=elitism, 
+      selt=2, cxon=2, cxpc=0.95,
+      mutpm=0.05, mutmy=0, mutsdy=1, 
+      tercrit=c(1), monitorfunc=monprogress)
+    genfits = garesult$genfits
+    g = garesult$bestsol$g
+    if(is.matrix(genfits)){
+      permat[i, 1:8] = genfits[nrow(genfits),]
+      permat[i, 9] = g
+    }else{
+      permat[i, 1:8] = genfits
+      permat[i, 9] = g
+    }
+    ptime = as.difftime(Sys.time()-ptime, units="secs")
+    ptime = as.numeric(ptime, units = "secs")
+    permat[i, 10] = ptime
+    if(abs(permat[i,2]-fgopt[j]) <= fgoptdif[j])
+      permat[i, 11] = permat[i, 11] + 1
+    permat[i, 12] = garesult$tcode
+    i=i+1
+  }
+  perarr[,,k] = permat
+}
+
+# Örnek 3.71: Sonuçların incelenmesi ve görselleştirilmesi
+# Bağımlılık: Örnek 3.72
+resultGA = matrix(NA, nrow=nrow(permat), ncol=ncol(permat))
+rownames(resultGA) = rownames(permat)
+colnames(resultGA)= colnames(permat)
+for(i in 1:nrow(resultGA))
+  for(j in 1:ncol(resultGA)){
+    resultGA[i,j] = round(mean(perarr[i,j,]),2)
+    resultGA[i,11] = sum(perarr[i,11,]!=0)
+}
+t(resultGA)
+
+# Örnek 3.72: Global optimuma yaklaşma başarımları
+# Bağımlılık: Örnek 3.71, 3.72
+# Global optimum vektörünü oluştur 
+fgopt = c() 
+fgopt[1] = getGlobalOptimum(fn1)$value
+fgopt[2] = getGlobalOptimum(fn2)$value
+fgopt[3] = getGlobalOptimum(fn3)$value
+fgopt[4] = getGlobalOptimum(fn4)$value
+fgopt[5] = getGlobalOptimum(fn5)$value
+fgopt[6] = getGlobalOptimum(fn6)$value
+fgopt[7] = getGlobalOptimum(fn7)$value
+fgopt[8] = getGlobalOptimum(fn8)$value
+fgopt
+solopt = round(resultGA[,2],2)
+solopt
+fabserr = round(abs(fgopt-solopt),2)
+fabserr
+frelerr = round(fabserr/abs(fgopt), 2)
+frelerr[fabserr==0 | fgopt==0] = NA
+frelerr
+ncgo = resultGA[,11] # Global opt'a yak. sayısı (GOYS) 
+sr = round(ncgo / R * 100, 2) # %Başarı puanı
+resmat = cbind(fgopt, solopt, fabserr, frelerr, ncgo, sr)
+resmat
+plotcompare(resmat, c(2,3,4,6))
+
+# Örnek 3.73: Himmelblau fonksiyonu 
+# smoof paketinin kurulması/yüklenmesi
+if(!require(smoof)){
+  install.packages("smoof", 
+  repos="https://cloud.r-project.org"); require(smoof)
+}
+fn = makeHimmelblauFunction()
+# Uyum fonksiyonu tanımı
+himmelblau = function(x) (fn(x))
+# Uyum fonksiyonun global optimum için test edilmesi
+x = c(3,2)
+himmelblau(x)
+
+# Örnek 3.74: montestfunction monitör fonksiyonun test edilmesi
+# Bağımlılık: Kod 3.22
+for(i in 1:20){
+  x = runif(2, -5.12, 5.12)
+  montestfunction(x=x, g=i)
+}
+
+# Örnek 3.75: Uyarlamalı algoritmaların bootstraple çalıştırılması
+# Bağımlılık: Kod 3.1
+# Parametrelerin tanımlanması
+lb = rep(-5.12, 2); ub = rep(5.12, 2)
+n = 25; m = 2; niter = 50; R = 10
+perfitems = c(fixpcmut, leitingzhi, ilmdhc, adana1)
+# Sonuç nesneleri ve özelliklerinin tanımlanması
+permat = matrix(NA, nrow=length(perfitems), ncol=11)
+perarr = array(NA, dim=c(length(perfitems), 11, R))
+rownames(permat) = c("noadapt","leitingzhi", "ilmdhc", "adana1")
+colnames(permat)= c("min", "max", "mean", "sd", 
+  "Q1", "Q2", "Q3", "cv%", "iters", "ctime", "sc")
+set.seed(8)
+initpop = initval(n, m, type=2) #Başlangıç popülasyonu
+# R tekrarlı bootstrap
+for(k in 1:R){
+  i=1
+  rsampidx = sample(1:n, size=n, replace=TRUE)
+  rsamppop = initpop[rsampidx,]
+  for(j in 1:length(perfitems)){
+    ptime = Sys.time()
+    garesult = adana(prevpop=rsamppop,n=n, m=m, maxiter=niter, 
+      objective="min", gatype="gga",
+      initfunc=initval, fitfunc=himmelblau, selfunc=seltour, 
+      crossfunc=wax, mutfunc=nunimut, replace=elitism,
+      adapfunc=perfitems[[j]], monitorfunc=montestfunction,
+      lb=lb, ub=ub, selt=2,
+      cxon=2, cxpc=0.9, cxpc2=0.9, mutpm=0.05, mutpm2=0.2, mutb=2,
+      adapa=0.5, adapb=0.75, reps=1, bestdif=0.001,
+      tercrit=c(1), keepbest=TRUE)
+    genfits = garesult$genfits
+    if(is.matrix(genfits)){
+      permat[i, 1:8] = genfits[nrow(genfits),]
+      permat[i, 9] = garesult$bestsol$generation
+    }else{
+      permat[i, 1:8] = genfits
+      permat[i, 9] = 0
+    }
+    ptime = as.difftime(Sys.time()-ptime, units="secs")
+    ptime = as.numeric(ptime, units = "secs")
+    permat[i, 10] = ptime
+    permat[i, 11] = garesult$tcode
+    i=i+1
+  }
+  perarr[,,k] = permat
+}
+
+# Örnek 3.76: Sonuçların incelenmesi ve görselleştirilmesi
+# Bağımlılık: Örnek 3.77
+resultGA = matrix(NA, nrow=nrow(permat), ncol=ncol(permat))
+rownames(resultGA) = rownames(permat)
+colnames(resultGA)= colnames(permat)
+for(i in 1:nrow(resultGA))
+  for(j in 1:ncol(resultGA))
+    resultGA[i,j] = mean(perarr[i,j,])
+t(round(resultGA,3))
+plotcompare(resultGA, c(1:4))
+
+# Örnek 3.77: Algoritma (grup) ve ortalamaların hazırlanması
+# Bağımlılık: Örnek 3.77
+# Çözüm değerleri ve algoritma gruplarının belirlenmesi
+nm = dim(perarr)[1]
+bsopt = c()
+for(i in 1:nm)
+  bsopt = c(bsopt, perarr[i,3,])
+algos = c()
+for(i in 1:nm)
+  algos = c(algos, rep(rownames(permat)[i], R))
+algos = factor(algos)
+
+# Örnek 3.78: Çözümlerin birleşik serpilme ve kutu-bıyık grafikleri
+# Bağımlılık: Örnek 3.77, 3.79
+opar = par(mfrow=c(2,1))
+plot(bsopt, pch=c(1:4), col=c(2,4,5,6), cex=1.2,
+  xlab="Algorithms", ylab="Mean", xaxt="n",
+  main="Scatter Plot of Bootstrap Optimal Solutions")
+boxplot(bsopt~algos, col=c(2,4,5,6), 
+  xlab="Algorithms", ylab="Mean",
+  main="Boxplots of Bootstrap Optimal Solutions")
+par(opar)
+
+# Örnek 3.79: Uyarlamasız GA (noadapt) histogram ve QQ grafikleri
+# Bağımlılık: Örnek 3.77, 3.79
+opar = par(mfrow=c(1,2))
+bsalgo1 = bsopt[algos=="noadapt"]
+hist(bsalgo1, col="orange", 
+  xlab="Opt.Çözüm", ylab="Frekans", main="noadapt histogram")
+qqnorm(bsalgo1, pch=19, col="orange", frame=FALSE)
+qqline(bsalgo1, col="steelblue", lwd=2)
+par(opar)
+
+# Örnek 3.80: Uyarlamasız GA (noadapt) çözümleri için normallik testi
+# Bağımlılık: Örnek 3.77, 3.79
+shapiro.test(bsopt[algos=="noadapt"])
+
+# Örnek 3.81: Kruskal-Wallis Testi
+# Bağımlılık: Örnek 3.75, 3.77
+kruskal.test(bsopt~algos) 
+
+# Örnek 3.82: WRST ile karşılaştırma (düzeltmesiz)
+# Bağımlılık: Örnek 3.77, 3.79
+pairwise.wilcox.test(bsopt, algos, p.adjust.method="none")
+
+# Örnek 3.83: WRST ile karşılaştırma (FDR düzeltmeli)
+# Bağımlılık: Örnek 3.77, 3.79
+pairwise.wilcox.test(bsopt, algos, p.adjust.method="fdr")
+
+# Örnek 3.84: WRST ile karşılaştırma (Bonferroni düzeltmeli)
+# Bağımlılık: Örnek 3.77, 3.79
+pairwise.wilcox.test(bsopt, algos, paired=FALSE,
+  p.adjust.method="bonferroni")
+
+# Örnek 3.85: 1. tip hata düzeltme yöntemleri
+p.adjust.methods
+
+# Örnek 3.86: Dunn testi ile karşılaştırma (BY düzeltmeli)
+# Bağımlılık: Örnek 3.77, 3.79
+if(!require(PMCMRplus)) {install.packages("PMCMRplus",
+ repo="https://cloud.r-project.org"); library(PMCMRplus)}
+kwAllPairsDunnTest(bsopt, algos, p.adjust.method="bonferroni")
+
+# Örnek 3.87: Farklılıkları harfle gruplandırma
+# Bağımlılık: Örnek 3.77, 3.79
+if(!require(rcompanion)){
+  install.packages("rcompanion",
+   repo="https://cloud.r-project.org"); library(rcompanion)}
+if(!require(multcompView)){
+  install.packages("multcompView",
+   repo="https://cloud.r-project.org"); library(multcompView)}
+pwwctres = pairwise.wilcox.test(bsopt, algos, paired=FALSE,
+  p.adjust.method="fdr")
+pvalues = pwwctres$p.value
+fpvalues = fullPTable(pvalues)
+fpvalues
+multcompLetters(fpvalues, threshold=0.05)
+
+# Örnek 3.88: leitingzhi çözümünü 
+#  Himmelblau global opt. ile karşılaştırma
+# Bağımlılık: Örnek 3.77, 3.79
+bsleitingzhi = bsopt[algos=="leitingzhi"]
+wilcox.test(bsleitingzhi, mu=0, 
+  alternative="two.sided",exact=FALSE)
+
+# Örnek 3.89: optimx argümanlar ve kontrol atamaları listesi 
+hgaparams = list(method="L-BFGS-B", 
+  poptim=0.05, pressel=0.5,
+  lower=c(-10, -10), upper=c(10, 10),
+  control=list(maximize=FALSE, maxit=1000))
+
+# Örnek 3.90: Booth fonksiyonu 
+# smoof paketinin kurulması/yüklenmesi
+if(!require(smoof)){
+  install.packages("smoof", 
+  repos="https://cloud.r-project.org"); require(smoof)
+}
+fn = makeBoothFunction()
+# Uyum fonksiyonu tanımı
+booth = function(x) (fn(x))
+
+# Örnek 3.92: adana GA'sını optimx ile melezleme
+# Bağımlılık: Kod 3.1, 3.22, 3.23; Örnek: 3.92 
+set.seed(9)
+boothHGA = adana(n=200, m=2, maxiter=100,
+  objective="min", gatype="gga",
+  initfunc=initval, lb=rep(-10, 2), ub=rep(10, 2),
+  fitfunc=booth, selfunc=seltour, adapfunc=NULL, 
+  crossfunc=wax, mutfunc=nunimut, replace=elitism,
+  hgafunc=hgaoptimx, hgaftype="w", hgans=2, hgastep=5,
+  selt=2, reps=2, repk=2, cxon=2, cxpc=0.8, 
+  mutpm=0.2, mutpow=2,  
+  tercrit=c(1:4), monitorfunc=montestfunction)
+
+# Örnek 3.90: Melez GA sonucunun görüntülenmesi
+# Bağımlılık: Örnek: 3.93 
+bestsol(boothHGA)
+
+# Örnek 3.93: metaOpt argümanlar ve kontrol atamaları listesi 
+hgaparams = list(algo="BHO", objective="MIN", 
+  fitfunc=booth, lower=c(-10,-10), upper=c(10, 10), 
+  control=list(numPopulation=10, maxIter=100))
+
+# Örnek 3.94: GA + NIA melezlemesi 
+# Bağımlılık: Kod 3.1, 3.24; Örnek 3.95 
+boothHGA2 = adana(n=200, m=2, maxiter=100,
+  objective="min", gatype="gga",
+  initfunc=initval, lb=rep(-10, 2), ub=rep(10, 2),
+  fitfunc=booth, selfunc=seltour, adapfunc=NULL, 
+  crossfunc=wax, mutfunc=nunimut, replace=elitism,
+  hgafunc=hgamho, hgaftype="w", hgans=2, hgastep=5,
+  objval=0, selt=2, reps=2, repk=2, cxon=2, cxpc=0.8, 
+  mutpm=0.2, mutpow=2,  
+  tercrit=c(1:4), monitorfunc=monprogress)
+
+# Örnek 3.95: Melez GA sonucunun görüntülenmesi
+# Bağımlılık: Örnek 3.96 
+bestsol(boothHGA2)
+
+# Örnek 3.96: metaOpt argümanları ve kontrol atamaları listesi 
+hgaparams = list(algo="GA", objective="MIN", 
+  fitfunc=booth, lower=c(-10,-10), upper=c(10, 10), 
+  control=list(numPopulation=10, maxIter=100))
+
+# Örnek 3.97: GA + GA melezlemesi 
+# Bağımlılık: Kod 3.1, 3.24; Örnek: 3.98
+boothHGA3 = adana(n=200, m=2, maxiter=100,
+  objective="min", gatype="gga",
+  initfunc=initval, lb=rep(-10, 2), ub=rep(10, 2),
+  fitfunc=booth, selfunc=seltour, adapfunc=NULL, 
+  crossfunc=wax, mutfunc=nunimut, replace=elitism,
+  hgafunc=hgamho, hgaftype="w", hgans=2, hgastep=5,
+  objval=0, selt=2, reps=2, repk=2, cxon=2, cxpc=0.8, 
+  mutpm=0.2, mutpow=2,  
+  tercrit=c(1:4), monitorfunc=monprogress)
+
+# Örnek 3.98: GA+GA melezleme sonucu
+# Bağımlılık: Örnek 3.99 
+bestsol(boothHGA3)
+
+# BÖLÜM 4 ......................................................................
+
+# Örnek 4.1: Parametrelerin ayarlanması
+lb = c(0.0, 0.0)
+ub = c(100.0, 100.0)
+n = 1500
+m = length(lb)
+niters = 1000
+pm = 0.05
+pc = 0.80
+
+# Örnek 4.2: Örnek problemin adana ile çözümü
+# Bağımlılık: Kod 3.1, 3.3, 4.2; Örnek 4.1
+resadana = adana(n=n, m=m, lb=lb, ub=ub, 
+  maxiter=niters, objective="max", gatype="gga",
+  initfunc=initval, fitfunc=reklamfit2, selfunc=seltour, 
+  crossfunc=wax, mutfunc=nunimut, replace=elitism,
+  adapfunc=NULL, monitorfunc=monprogress,
+  selt=2, cxon=2, cxpc=pc, cxk=3, reps=4, repk=5, mutpm=pm, 
+  tercrit=c(1))
+bestsol(resadana)
+
+# Örnek 4.3: genalg paketiyle GA uygulaması
+# Bağımlılık: Kod 4.4; Örnek 4.1
+if(!require(genalg)){
+  install.packages("genalg", 
+  repo="https://cloud.r-project.org");
+  library(genalg)}
+resGenAlg = rbga(stringMin=lb, stringMax=ub,
+  popSize=n, iters=niters, 
+  mutationChance=pm, elitism=TRUE, 
+  evalFunc=reklamfit4)
+
+# Örnek 4.4: genalg optimizasyon sonuçlarını inceleme
+# Bağımlılık: Örnek 4.3
+cat(summary(resGenAlg))
+
+# Örnek 4.5: genalg nesnesi bileşenleri
+# Bağımlılık: Örnek 4.3
+names(resGenAlg)
+
+# Örnek 4.6: En iyi çözümü gösterme
+# Bağımlılık: Örnek 4.3
+solGenAlg = (summary(resGenAlg))
+solGenAlg = strsplit(solGenAlg,"\n")[[1]]
+solGenAlg = strsplit(solGenAlg[13]," ")[[1]]
+bestsol = as.numeric(solGenAlg[-(1:5)])
+bestsol
+
+# Örnek 4.7: Grafiklerin çizilmesi
+# Bağımlılık: Örnek 4.3
+plot(resGenAlg, type="default")
+plot(resGenAlg, type="vars")
+plot(resGenAlg, type="hist")
+
+# Örnek 4.8: GA Paketi ile uygulama
+#rm(list = ls(all = TRUE))
+if(!require(GA)){
+  install.packages("GA", repo="https://cloud.r-project.org");
+  library(GA)}
+resGA = ga(type = "real", lower=lb, upper=ub, popSize=n,
+  maxiter=niters, run=0.25*niters, fitness=reklamfit2, 
+  pcrossover=pc, pmutation=pm, elitism=5, monitor=TRUE)
+
+# Örnek 4.9: GA optimizasyon sonuçlarını görüntüleme 
+# Bağımlılık: Örnek 4.8
+summary(resGA)
+
+# Örnek 4.10: ga nesnesi bileşenleri
+# Bağımlılık: Örnek 4.8
+resGA
+
+# Örnek 4.11: En iyi çözümün göüntülenmesi
+# Bağımlılık: Örnek 4.8
+resGA@solution
+resGA@fitnessValue
+
+# Örnek 4.12: Kuşaklara göre uyum değerleri grafiği
+# Bağımlılık: Örnek 4.8
+plot(resGA, main="İterasyonlara Göre Uyum Değerleri")
+
+# Örnek 4.13: rgenoud ile uygulama
+if(!require(rgenoud)){
+  install.packages("rgenoud", repo="https://cloud.r-project.org");
+  library(rgenoud)}
+dommat = matrix(c(lb,ub),m,2,byrow = FALSE)
+resgenoud = genoud(max=TRUE, fn=reklamfit2, 
+  nvars=nrow(dommat), pop.size=n, 
+  max.generations=niters, wait.generations = 10,
+  Domains = dommat, boundary.enforcement = 2)
+
+# Örnek 4.14: genoud nesnesi bileşenleri
+# Bağımlılık: Örnek 4.13
+names(resgenoud)
+
+# Örnek 4.15: Optimizasyon sonuçlarını görüntüleme
+# Bağımlılık: Örnek 4.13
+resgenoud
+resgenoud$value# The parameters of the solutions
+resgenoud$par
+
+# BÖLÜM 5 .......................................................................
+
+# Örnek 5.1a: slumptest.data verisetinin okunması 
+setwd("C:/gabook")
+slumpdata = read.csv("slumptest.dat", header=TRUE)
+str(slumpdata)
+
+# Örnek 5.1b: slump eğitim ve test verisetinin hazırlanması 
+# Bağımlılık: Örnek 5.1a
+# Analiz edilecek verinin seçilmesi
+slump = slumpdata[,c(2:8, 11)]
+head(slump)
+rm(slumpdata)
+# Eğitim ve test verisinin hazırlanması
+n = nrow(slump) #Toplam gözlem sayısı
+ntrain = floor(n*0.8) #Eğitim seti gözlem sayısı
+set.seed(1923) #Tekrarlanabilirlik sağlar
+trainidx = sample(1:nrow(slump), size=ntrain, replace=FALSE)
+slumptrain = slump[trainidx,] #Êğitim seti
+slumptest = slump[-trainidx,] #Test seti
+rm(slump)
+
+# Örnek 5.2a: lm ile doğrusal regresyon analizi
+# Bağımlılık: Örnek 5.1b
+slumplm = lm(formula=compstrength~., data=slumptrain)
+summary(slumplm)
+
+# Örnek 5.2b: slumplm modelinin test edilmesi
+# Bağımlılık: Örnek 5.1a, 5.1b
+slumppred = predict(slumplm, new=slumptest)
+slumpyyhat = data.frame(gozlem=slumptest[,8], tahmin=slumppred)
+head(slumpyyhat, 5)
+
+# Örnek 5.2c: Test setinde R2 hesaplama
+# Bağımlılık: Örnek 5.2b
+rss = sum((slumpyyhat$tahmin-slumpyyhat$gozlem)^2)
+tss = sum((slumpyyhat$gozlem-mean(slumpyyhat$gozlem))^2)
+R2 = 1-rss/tss
+R2
+
+# Örnek 5.2d: Test setinde modelmetrics ile R2 hesaplama
+# Bağımlılık: Kod 5.1; Örnek 5.2b
+modelmetrics(slumpyyhat$gozlem, slumpyyhat$tahmin)
+
+# Örnek 5.2e: Farklı modellerin eğitilmesi
+# Bağımlılık: Örnek 5.1a, 5.1b
+slumplm1 = lm(formula=compstrength~sp, data=slumptrain)
+summary(slumplm1)
+slumplm2 = lm(formula=compstrength~slag, data=slumptrain)
+summary(slumplm2)
+slumplm3 = lm(formula=compstrength~cement, data=slumptrain)
+summary(slumplm3)
+slumplm4 = lm(formula=compstrength~sp+slag+cement, data=slumptrain)
+summary(slumplm4)
+
+# Örnek 5.3a: slumptrain için kademeli regregresyon
+# Bağımlılık: Örnek 5.1a, 5.1b
+# Boş model
+slumplmnull = lm(formula=compstrength~1, data=slumptrain)
+# Tam model
+slumplmfull = lm(formula=compstrength~., data=slumptrain)
+# direction=both tercihli step ile kademeli regresyon
+slumplmstep = step(slumplmnull, direction="both",
+  scope=list(lower=slumplmnull, upper=slumplmfull))
+
+# Örnek 5.3b: slumpstep modelinin sonuçları
+# Bağımlılık: Örnek 5.3a
+summary(slumplmstep)
+
+# Örnek 5.3c: slumplmstep modelinde seçilen değişkenler
+# Bağımlılık: Örnek 5.3a
+selvars = names(unlist(slumplmstep[[1]]))
+selvars = selvars[-("(Intercept)" %in% selvars)]
+selvars
+  
+# Örnek 5.3d: slumplmstep modelinin test edilmesi ve uyum iyiliği
+# Bağımlılık: Örnek 5.1b, 5.3a
+slumppred = predict(slumplmstep, new=slumptest)
+slumpyyhat = data.frame(gozlem=slumptest[,8], tahmin=slumppred)
+head(slumpyyhat, 5)
+modelmetrics(slumpyyhat$gozlem, slumpyyhat$tahmin)
+
+# Örnek 5.4a: caret ile çapraz doğrulama
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(MASS))
+ {install.packages("MASS", repo="https://cloud.r-project.org");
+  library(MASS)}
+if(!require(caret))
+ {install.packages("caret", repo="https://cloud.r-project.org");
+  library(caret)}
+# Modelin çapraz doğrulama ile eğitilmesi
+traincontrol = trainControl(method="cv", number=10)
+slumptraincv = train(compstrength~., data=slumptrain,
+  method = "lmStepAIC", 
+  trControl = traincontrol,
+  trace = FALSE)
+
+# Örnek 5.4b: Sonuçların incelenmesi
+# Bağımlılık: Örnek 5.4a
+names(slumptraincv)
+slumptraincv$results
+#Son model katsayıları
+slumpmodel = slumptraincv$finalModel
+# Model sonuçlarının görüntülenmesi
+summary(slumpmodel)
+
+# Örnek 5.4c: Modelin test edilmesi
+# Bağımlılık: Örnek 5.1a, 5.1b, 5.4a
+slumppred = predict(slumpmodel, new=slumptest)
+slumpyyhat = data.frame(gozlem=slumptest$compstrength,
+  tahmin=slumppred)
+modelmetrics(slumpyyhat$gozlem, slumpyyhat$tahmin)
+
+# Örnek 5.5a: glmnet ile ridge regresyon analizi
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(glmnet))
+ {install.packages("glmnet", 
+  repo="https://cloud.r-project.org");
+  library(glmnet)}
+# Bağımsız değişkenler için model matrisi
+X = model.matrix(compstrength~.-1, data=slumptrain)
+# Bağımlı değişken
+y = slumptrain$compstrength
+# alpha=0 #Ridge regresyon için alfa değeri
+# Ridge regresyon modelini tanımlama 
+slumpridge = glmnet(X, y, alpha=0) #Ridge model
+plot(slumpridge, label=TRUE, ylab="Katsayılar")
+
+# Örnek 5.5b: Çapraz doğrulama ridge regresyon lamda hesaplama
+# Bağımlılık: Örnek 5.5a
+slumpridgecv = cv.glmnet(scale(X), y, alpha=0)
+# En iyi lamda değeri
+lambdamin = slumpridgecv$lambda.min
+lambdamin
+lambda1se = slumpridgecv$lambda.1se
+lambda1se
+# Çapraz doğrulamada hata değişim grafiği 
+plot(slumpridgecv)
+
+# Örnek 5.5c: Katsayıların görüntülenmesi
+# Bağımlılık: Örnek 5.5a
+coef(slumpridgecv, s="lambda.min")
+coef(slumpridgecv, s="lambda.1se")
+
+# Örnek 5.5d: Ridge regresyon lamdaya göre katsayı grafiği  
+# Bağımlılık: Kod 5.2; Örnek 5.5a
+plot(slumpridge, xvar="lambda", ylab="Katsayı", label=TRUE)
+addvarnames(slumpridge, osx=0.5)
+abline(h=0, col=1, lty=2)
+abline(v=lambdamin, col=2, lty=2)
+abline(v=lambda1se, col=4, lty=2)
+
+# Örnek 5.5e: En iyi lamda ile modelin yeniden eğitilmesi
+# Bağımlılık: Örnek 5.1a, 5.1b
+slumpridgebest = glmnet(X, y, alpha=0, lambda=lambdamin)
+coef(slumpridgebest)  #Regresyon katsayıları
+
+# Örnek 5.5f: Ridge regresyon modelinin test edilmesi
+# Bağımlılık: Örnek 5.5a
+slumptest = as.matrix(slumptest)
+slumppred = predict(slumpridgebest, s=lambdamin,
+  newx=slumptest[,1:7], type="response")
+slumpridgeyyhat = data.frame(gozlem=slumptest[,8],
+  tahmin=slumppred[,1])
+modelmetrics(slumpridgeyyhat$gozlem,
+  slumpridgeyyhat$tahmin)
+
+# Örnek 5.6a: glmnet ile Lasso regresyon analizi
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(glmnet))
+ {install.packages("glmnet", 
+  repo="https://cloud.r-project.org");
+  library(glmnet)}
+# Bağımsız değişkenler için model matrisi
+X = model.matrix(compstrength~.-1, data=slumptrain)
+# Bağımlı değişken
+y = slumptrain$compstrength
+alpha = 1 #Lasso regresyon için alfa 1 olmalıdır
+slumplasso = glmnet(scale(X), y, alpha=alpha)
+# Optimal lamdayı bulmak için çapraz  doğrulama
+slumplassocv = cv.glmnet(scale(X), y,
+  alpha=alpha, nfolds=10)
+lambdamin = slumplassocv$lambda.min
+lambdamin
+lambda1se = slumplassocv$lambda.1se
+lambda1se
+
+# Örnek 5.6b: Lamdaya göre katsayı değişim grafiği 
+# Bağımlılık: Örnek 5.6a
+plot(slumplasso, xvar="lambda", ylim=c(-4,7), label=TRUE)
+addvarnames(slumplasso, osx=0.2)
+abline(h=0, col=1, lty=2)
+abline(v=lambdamin, col=2, lty=2)
+abline(v=lambda1se, col=4, lty=2)
+
+# Örnek 5.6c: Lamda için çapraz doğrulama hata değişim grafiği 
+# Bağımlılık: Örnek 5.6a
+plot(slumplassocv)
+# Örnek 5.6d: En iyi lamda değeriyle Lasso modeli eğitimi
+# Bağımlılık: Örnek 5.1a, 5.1b
+slumplassobest = glmnet(X, y, alpha=1, lambda=lambdamin)
+coef(slumplassobest)
+
+# Örnek 5.6e: Lasso regresyon modelinin test edilmesi
+# Bağımlılık: Örnek 5.6d
+slumppred = predict(slumplassobest, 
+  s=lambdamin, newx=slumptest[,1:7])
+slumplassoyyhat = data.frame(
+  gozlem=slumptest[,8], tahmin=slumppred[,1])
+modelmetrics(slumplassoyyhat$gozlem,
+  slumplassoyyhat$tahmin)
+
+# Örnek 5.7a: glmnet ile Elastic Net regresyon analizi
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(glmnet))
+ {install.packages("glmnet", 
+  repo="https://cloud.r-project.org");
+  library(glmnet)}
+# Bağımsız değişkenler için model matrisi
+X = model.matrix(compstrength~.-1, data=slumptrain)
+# Bağımlı değişken
+y = slumptrain$compstrength
+alpha = 0.5 #Elastic net regresyonu 
+slumpenet = glmnet(scale(X), y, alpha=alpha)
+# Optimal lamdayı bulmak için çapraz  doğrulama
+slumpenetcv = cv.glmnet(X, y, alpha=alpha, nfolds=10)
+lambdamin = slumpenetcv$lambda.min
+lambdamin
+lambdalse = slumpenetcv$lambda.1se
+lambdalse
+
+# Örnek 5.7b: Elastic Net lamdaya göre katsayılar grafiği 
+# Bağımlılık: Örnek 5.7a
+plot(slumpenet, xvar="lambda", ylim=c(-4,7), label=TRUE)
+addvarnames(slumpenet, osx=0.5)
+abline(h=0, col=1, lty=2)
+abline(v=lambdamin, col=2, lty=2)
+abline(v=lambdalse, col=4, lty=2)
+
+# Örnek 5.7c: En iyi lamda ile ENet'in yeniden eğitilmesi
+# Bağımlılık: Örnek 5.1a, 5.1b
+slumpenetbest = glmnet(X, y, alpha=0.5, lambda=lambdamin)
+coef(slumpenetbest)
+
+# Örnek 5.7d: Elastic Net regresyon modelinin test edilmesi
+# Bağımlılık: Örnek 5.7a
+slumppred = predict(slumpenetbest, s=lambdamin,
+   newx=slumptest[,1:7])
+slumpenetyyhat = data.frame(gozlem=slumptest[,8],
+   tahmin=slumppred[,1])
+modelmetrics(slumpenetyyhat$gozlem, slumpenetyyhat$tahmin)
+
+# Örnek 5.8: [0,1]'da alfa için 10-katlı çapraz doğrulama
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(glmnet))
+ {install.packages("glmnet", 
+  repo="https://cloud.r-project.org");
+  library(glmnet)}
+# Bağımsız değişkenler için model matrisi
+X = model.matrix(compstrength~.-1, data=slumptrain)
+# Bağımlı değişken
+y = slumptrain$compstrength
+for (i in 0:10) {
+    assign(paste0("model", i),
+    cv.glmnet(X, y, type.measure="mse", 
+    alpha=i/10, family="gaussian"))
+}
+# Grafikler
+opar = par(mfrow=c(2,3))
+plot(slumpridge, xvar="lambda", main="Ridge")
+plot(slumpenet, xvar="lambda", main="Elastic Net")
+plot(slumplasso, xvar="lambda", main="Lasso")
+plot(model0, main="Elastic Net alfa=0")
+plot(model5, main="Elastic Net alfa=0.5")
+plot(model10, main="Elastic Net alfa=1")
+par(opar)
+
+# Örnek 5.9a: Ridge regresyon için çapraz doğrulama
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(glmnet))
+ {install.packages("glmnet", 
+  repo="https://cloud.r-project.org");
+  library(glmnet)}
+if(!require(caret))
+ {install.packages("caret",
+  repo="https://cloud.r-project.org");
+  library(caret)}
+set.seed(1923)
+lambdas = 10^seq(-3, 3, length=100)
+slumpridge = train(compstrength~., data=slumptrain, 
+   method="glmnet", trControl=trainControl("repeatedcv",
+   number=10, repeats=3),
+   tuneGrid=expand.grid(alpha=0,lambda=lambdas)
+)
+# Katsayıların görüntülenmesi
+coef(slumpridge$finalModel, slumpridge$bestTune$lambda)
+# Model tahminleme başarımı (test işlemi)
+slumppred = predict(slumpridge, slumptest)
+ridgetestmetrics = modelmetrics(slumptest[,8], slumppred)
+ridgetestmetrics
+
+# Örnek 5.9b: Lasso regresyon için çapraz doğrulama
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(glmnet))
+ {install.packages("glmnet",
+  repo="https://cloud.r-project.org");
+  library(glmnet)}
+if(!require(caret))
+ {install.packages("caret",
+  repo="https://cloud.r-project.org");
+  library(caret)}
+set.seed(1923)
+lambdas = 10^seq(-3, 3, length=100)
+slumplasso = train(compstrength~., data=slumptrain, 
+   method="glmnet", trControl=trainControl("repeatedcv",
+   number=10, repeats=3),
+   tuneGrid=expand.grid(alpha=1,lambda=lambdas)
+)
+# Katsayılar
+coef(slumplasso$finalModel, slumplasso$bestTune$lambda)
+# Tahmin
+slumppred = predict(slumplasso, slumptest)
+# Model tahminleme performansı (test işlemi)
+lassotestmetrics = modelmetrics(slumptest[,8], slumppred)
+lassotestmetrics
+
+# Örnek 5.9c: Elastic Net regresyon için çapraz doğrulama
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(glmnet))
+ {install.packages("glmnet", 
+  repo="https://cloud.r-project.org");
+  library(glmnet)}
+if(!require(caret))
+ {install.packages("caret",
+  repo="https://cloud.r-project.org");
+  library(caret)}
+set.seed(1923)
+lambdas = seq(-3, 3, length=10)
+slumpenet = train(compstrength~., data=slumptrain, 
+   method="glmnet", trControl=trainControl("repeatedcv",
+   number=10, repeats=3),
+   tuneGrid=expand.grid(alpha=0.5,lambda=lambdas),
+   tuneLength=10
+)
+# Katsayılar
+coef(slumpenet$finalModel, slumpenet$bestTune$lambda)
+# Tahmin
+slumppred = predict(slumpenet, slumptest)
+enettestmetrics = modelmetrics(slumptest[,8], slumppred)
+enettestmetrics
+
+# Örnek 5.9d: Test verisinde model karşılaştırma tablosu
+# Bağımlılık: Örnek 5.9a, 5.9b, 5.9c
+testmetrics = rbind(ridgetestmetrics, lassotestmetrics,
+  enettestmetrics)
+rownames(testmetrics) = c("Ridge", "Lasso", "ElasticNet")
+testmetrics
+
+# Örnek 5.10a: resamples ile eğitim modellerini karşılaştırma
+# Bağımlılık: Örnek 5.9a, 5.9b, 5.9c
+regmodels = list(Ridge=slumpridge, Lasso=slumplasso,
+  Elasticnet=slumpenet)
+rsampmodels = resamples(regmodels) 
+summary(object=rsampmodels, metric="RMSE")
+summary(rsampmodels, metric="Rsquared")
+
+# Örnek 5.10b: Eğitim modellerinin benzerliği (korelasyonlar)
+# Bağımlılık: Örnek 5.10a
+modelCor(rsampmodels, metric = rsampmodels$metric[1])
+
+# Örnek 5.11a: Boruta ile önemli değişkenlerin saptanması
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(Boruta))
+ {install.packages("Boruta", 
+  repo="https://cloud.r-project.org");
+  library(Boruta)}
+slumpboruta = Boruta(compstrength~., 
+  data=slumptrain, doTrace=1)
+
+# Örnek 5.11b: Boruta ile seçilen değişkenler
+# Bağımlılıklar: Örnek 5.11a
+# Önemli değişkenlerin listelenmesi
+slumpboruta$finalDecision
+plot(slumpboruta)
+
+# Örnek 5.12a: caret ile değişken önemlilik analizi
+# Bağımlılık: Örnek 5.1a, 5.1b
+if(!require(caret))
+ {install.packages("caret", 
+  repo="https://cloud.r-project.org");
+  library(caret)}
+slumplmfull = lm(formula=compstrength~., data=slumptrain)
+slumpvarimp = varImp(slumplmfull, scale=FALSE)
+slumpvarimp
+detach(package:caret) #Paketi ayır
+
+# Örnek 5.12b: Değişken önemlilik grafiği
+# Bağımlılık: Örnek 5.12a
+opar = par(mar=c(5,8,4,2))
+barplot(slumpvarimp$Overall, horiz=TRUE,
+ xlab="Önemlilik", ylab="Değişkenler",
+ names.arg=rownames(slumpvarimp),
+ border="blue", las=1, 
+ cex.names=0.8, 
+ main="Slump-Değişken Önemliliği")
+abline(v=1.0, col=2, lty=2, lwd=1)
+par(opar)
+
+# Örnek 5.13a: slumptest.data verisetinin okunması 
+setwd("C:/gabook")
+slumpdata = read.csv("slumptest.dat", header=TRUE)
+str(slumpdata)
+slump = slumpdata[,c(11, 2:8)]
+# Eğitim ve test verisinin hazırlanması
+n = nrow(slump) #Toplam gözlem sayısı
+ntrain = floor(n*0.8) #Eğitim seti gözlem sayısı
+set.seed(1923) #Tekrarlanabilirlik sağlar.
+trainidx = sample(1:nrow(slump), size=ntrain,
+  replace=FALSE)
+slumptrain = slump[trainidx,] #Eğitim seti
+slumptest = slump[-trainidx,] #Test seti
+rm(slump)
+
+# Örnek 5.13b: Değişken adlarının okunması 
+# Bağımlılık: Örnek 5.13a
+xnames = colnames(slumptrain)[2:8]
+yname = colnames(slumptrain)[1]
+
+# Örnek 5.14a: Uyum fonksiyonunun testi
+# Bağımlılık: Kod 5.3
+library(stats)
+criterion = 1
+x = c(1,1,0,1,0,1,1)
+slumpfit(x)
+criterion = 6
+x = c(1,1,0,1,0,1,1)
+slumpfit(x)
+x = c(0,0,0,1,0,1,1)
+slumpfit(x)
+x = c(1,1,1,1,1,1,1)
+slumpfit(x)
+x = c(0,0,0,0,0,0,0)
+slumpfit(x)
+
+# Örnek 5.14b: Farklı kromozom dizilişleri
+# Bağımlılık: Örnek 5.14a
+initpop = unname(expand.grid(rep(list(0:1), 7)))
+head(initpop, 3)              
+tail(initpop, 3)          
+
+# Örnek 5.15a: adana ile doğrusal modelde değişken seçme
+# Bağımlılık: Kod 3.1, 5.3; Örnek 5.13b
+# Parametreleri gir
+n = 100
+m = length(xnames)
+criterion = 6 #RMSE
+# GA'yı çalıştır
+slumpGGA = adana(n=n, m=m,
+  maxiter=100, objective="min", gatype="gga",
+  initfunc=initbin, fitfunc=slumpfit, 
+  selfunc=seltour, adapfunc=ilmdhc,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+ 
+# Örnek 5.15b: GA ile seçilen değişkenler
+# Bağımlılık: Örnek 5.13b, 5.15a
+bestsol(slumpGGA)
+xnames[slumpGGA$bestsol$chromosome==1]
+    
+# Örnek 5.15c: mogavs ile değişken seçme
+slumpMOGAV = mogavs(compstrength~., data=slumptrain, kBest=1,
+ maxGenerations=20, plots=FALSE, additionalPlots=TRUE)
+getBestModel(slumpMOGAV, nvar=6,"mse")
+getBestModel(slumpMOGAV, method="BIC")
+getBestModelVars(slumpMOGAV, nvars=0, method="AIC", 
+  data=slumptrain)
+cvslumpMOGAV = cv.mogavs(slumpMOGAV, nvar=6, data=slumptrain, 
+  y_ind=1, K=10, R=1, order=FALSE)
+cvslumpMOGAV
+ 
+# Örnek 5.15d: caret gafs ile değişken seçme
+library(caret)
+traincontrol = gafsControl(functions=caretGA)
+slumpcaretGA = gafs(x=slumptrain[,1:7], y=slumptrain[,8],
+  iters = 10, gafsControl=traincontrol, method="lm")
+
+# Örnek 5.16a: Verisetinin okunması 
+data("PimaIndiansDiabetes2", package="mlbench")
+str(PimaIndiansDiabetes2)
+# Verinin yeniden düzenlenmesi
+# Kayıp değerleri kaldır ve pima adında yeni veriçerçevesi oluştur 
+pima = na.omit(PimaIndiansDiabetes2) 
+rm(PimaIndiansDiabetes2) # Eski verisetini kaldır
+dim(pima) # Yeni veri çerçevesinin boyutları
+# pima veri çerçevesi sütunlarının isimlendirilmesi
+colnames(pima)[1:8] = paste0("x", 1:8)
+colnames(pima)[9] = "y"
+pima$y = as.integer(pima$y)
+# pos ve neg değerlerini 1 ve 0 olarak değiştirme
+neg = which(pima$y==1)
+pos = which(pima$y==2)
+pima$y[neg] = 0L
+pima$y[pos] = 1L
+pima$y = as.factor(pima$y)
+# pima veri çerçevesinin yapısı
+str(pima)
+
+# Örnek 5.16b: Eğitim ve test verisinin hazırlanması 
+# Bağımlılık: Örnek 5.16a
+# Eğitim ve test verisinin hazırlanması
+n = nrow(pima) #Toplam gözlem sayısı
+set.seed(1) # Gerçek uygulamalarda kullanmayınız
+pima = pima[sample(1:n, size=n, replace=FALSE),]
+ntrain = floor(n*0.7) #Eğitim seti gözlem sayısı
+set.seed(1) # Gerçek uygulamalarda kullanmayınız
+trainidx = sample(1:nrow(pima), size=ntrain, replace=FALSE)
+pimatrain = pima[trainidx,] #Eğitim seti
+pimatest = pima[-trainidx,] #Test seti
+
+# Örnek 5.17a: Lojistik modelin glm ile eğitilmesi 
+# Bağımlılık: Örnek 5.16b
+pimalog = glm(y~., data=pimatrain, family="binomial")
+summary(pimalog)
+
+# Örnek 5.17b: Lojistik model katsayılarının görüntülenmesi
+# Bağımlılık: Örnek 5.17a
+coef(pimalog)
+exp(coef(pimalog))
+
+# Örnek 5.18a: Lojistik model başarımı 1
+# Bağımlılık: Örnek 5.17a
+if(!require(pscl))
+ {install.packages("pscl", 
+  repo="https://cloud.r-project.org"); library(pscl)}
+pR2(pimalog) 
+detach(package:pscl) #Paketi çalışma alanından ayır
+
+# Örnek 5.18b: Eğitim seti ROC eğrisi ve AUC ölçütü
+# Bağımlılık: Örnek 5.17a
+if(!require(ROCR))
+ {install.packages("ROCR", 
+  repo="https://cloud.r-project.org");
+  library(ROCR)}
+trainpred = predict(pimalog, new=pimatrain, type="response")
+ROCpred = ROCR::prediction(trainpred, pimatrain$y)
+auc = performance(ROCpred, measure = "auc")
+auc = auc@y.values[[1]]
+auc
+ROCperf = ROCR::performance(ROCpred, 
+  measure = "tpr", x.measure = "fpr")
+plot(ROCperf, col=4, lwd=2, xlab="FPR", ylab="TPR")
+title("Eğitim seti ROC Eğrisi")
+abline(a=0, b=1, col="gray")
+
+# Örnek 5.18c: Lojistik model başarım ölçütleri 2
+# Bağımlılık: Örnek 5.17a
+if(!require(ModelMetrics)){
+install.packages("ModelMetrics",
+  repo="https://cloud.r-project.org");
+  library(ModelMetrics)}
+pimapred = predict(pimalog, new=pimatrain, type="response")
+auc(pimalog)
+gini(pimalog)
+logLoss(pimalog)
+mae(pimalog)
+mse(pimalog)
+rmse(pimalog)
+msle(pimalog)
+kappa(pimatrain$y, pimapred, cutoff = 0.5)
+npv(pimatrain$y, pimapred, cutoff=0.5) #Negatif tahmin gücü
+ppv(pimatrain$y, pimapred, cutoff=0.5) #Pozitif tahmin gücü
+recall(pimatrain$y, pimapred, cutoff=0.5) #Duyarlılık (TPR)
+tnr(pimatrain$y, pimapred, cutoff=0.5) #Özgüllük (TNR)
+brier(pimalog)
+detach(package:ModelMetrics) #Paketi kaldır
+
+# Örnek 5.19a: pimalog modelinin test edilmesi
+# Bağımlılık: Örnek 5.17a
+pimapred = predict(pimalog, new=pimatest, type="response")
+head(round(pimapred, 3), 10)
+cutoff = 0.5
+pimapred2 = ifelse(pimapred >= cutoff, 1, 0)
+head(pimapred2, 10)
+ 
+# Örnek 5.19b. Yanılgı matrisi
+# Bağımlılık: Örnek 5.17a, 5.19a
+if(!require(ModelMetrics))
+ {install.packages("ModelMetrics", 
+  repo="https://cloud.r-project.org");
+  library(ModelMetrics)}
+head(pimatest$y, 10)
+head(pimapred2, 10)
+head(pimatest$y == pimapred2, 10)
+confmat = confusionMatrix(actual=pimatest$y, 
+  predict=pimapred2, cutoff=0.5)
+colnames(confmat) = c("Tahmin-Negatif", "Tahmin-Pozitif")
+rownames(confmat) = c("Gözlem-Negatif", "Gözlem-Pozitif")
+confmat
+
+# Örnek 5.19c. Test verisinde AUC ölçütü ve ROC eğrisi
+# Bağımlılık: Örnek 5.17a, 5.19a
+if(!require(ROCR))
+ {install.packages("ROCR", 
+  repo="https://cloud.r-project.org");
+  library(ROCR)}
+ROCpred = ROCR::prediction(pimatest$y, pimapred)
+auc = performance(ROCpred, measure="auc")
+auc = auc@y.values[[1]]
+auc
+ROCperf = ROCR::performance(ROCpred, 
+  measure = "tpr", x.measure = "fpr")
+plot(ROCperf, col=4, lwd=2, xlab="FPR", ylab="TPR")
+title("Test seti ROC Eğrisi")
+abline(a=0, b=1, col="gray")
+
+# Örnek 5.20a: Lojistik modelin banktrain ile eğitimi
+# Bağımlılık: Örnek 5.16a, 5.16b
+pimalognull = glm(formula=y~1, data=pimatrain,
+  family="binomial")
+pimalogfull = glm(formula=y~., data=pimatrain,
+  family="binomial")
+pimalogstep = step(pimalognull, direction="both",
+  scope=list(lower=pimalognull, upper=pimalogfull))
+summary(pimalogstep)
+coef(pimalogstep)
+
+# Örnek 5.20b: Önerilen modelin testi
+pimatestprobs = predict(pimalogstep, pimatest, type="response")
+pimatestpred = ifelse(pimatestprobs >= 0.5, 1, 0)
+# Model doğruluğu (Model accuracy)
+mean(pimatestpred==pimatest$y)
+selvars = names(unlist(pimalogstep[[1]]))
+selvars = selvars[-("(Intercept)" %in% selvars)]
+selvars
+
+# Örnek 5.21a: Lojistik lasso regresyon 
+# Bağımlılık: Kod 5.2; Örnek: 5.16a, 5.16b
+if(!require(glmnet))
+ {install.packages("glmnet", 
+  repo="https://cloud.r-project.org");
+  library(glmnet)}
+# Bağımsız değişkenler için model matrisi
+X = model.matrix(y~.-1, data=pimatrain) #-1 intercepti çıkarır
+# Bağımlı değişken
+y = pimatrain$y
+# alpha=1 #Lasso regresyon için alfa değeri
+set.seed(1923)
+# Lasso regresyon modelini tanımlama 
+pimaloglasso = glmnet(X, y, alpha=1, family="binomial")
+# En küçük lamda değeri için çapraz doğrulama
+pimaloglassocv = cv.glmnet(X, y, family="binomial", type="mse")
+lambdamin = pimaloglassocv$lambda.min
+lambda1se = pimaloglassocv$lambda.1se
+# Lasso regresyon katsayılar grafiğini çiz 
+plot(pimaloglasso, xvar="lambda", label=TRUE)
+addvarnames(pimaloglasso, osx=0.5)
+abline(v=log(lambdamin), col=2, lty=2)
+abline(v=log(lambda1se), col=4, lty=2)
+abline(h=0, col=1, lwd=1, lty=2)
+
+# Örnek 5.21b: Lojistik lasso regresyonun test edilmesi 
+# Bağımlılık: Örnek 5.21a
+coef(pimaloglassocv, lambdamin)
+coef(pimaloglassocv, lambda1se)
+Xtest = model.matrix(y~., pimatest)[,-1]
+pimatestprobs = predict(pimaloglasso, newx=Xtest)
+pimatestpred = ifelse(pimatestprobs >= 0.5, 1, 0)
+mean(pimatest$y == pimatestpred[,1])
+
+# Örnek 5.22: caret ile değişken önemliliği 
+# Bağımlılık: Örnek 5.16a, 5.16b
+if(!require(caret))
+ {install.packages("caret", 
+  repo="https://cloud.r-project.org");
+  library(caret)}
+pimalog = glm(y~., data=pimatrain, family="binomial")
+pimavarimp = varImp(pimalog)
+pimavarimp
+xnames = colnames(pimatrain)[1:8]
+yname = colnames(pimatrain)[9]
+cutoff = quantile(pimavarimp$Overall)[3]
+xnames[pimavarimp >= cutoff]
+
+# Örnek 5.23: Değişken adlarının okunması
+# Bağımlılık: Örnek 5.16a,5.16b
+xnames = colnames(pimatrain)[1:8]
+yname = colnames(pimatrain)[9]
+
+# Örnek 5.24a: GA ile lojistik regresyonda değişken seçimi 1
+# Bağımlılık: Kod 3.1, 5.4; Örnek 5.16a, 5.16b
+n = 100
+m = length(xnames)
+criterion = 6 #BIC
+pimaGGA1 = adana(n=n, m=m, 
+  maxiter=100, objective="min", gatype="gga",
+  initfunc=initbin, fitfunc=pimafit, 
+  selfunc=seltour, adapfunc=adana2,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek 5.24b: GA ile seçilen değişkenler 1
+# Bağımlılık: Kod 3.3, 5.4; Örnek 5.24a
+bestsol(pimaGGA1)
+xnames[cbGGA1$bestsol$chromosome==1]
+
+# Örnek 5.24c: GA ile lojistik regresyonda değişken seçimi 2
+# Bağımlılık: Kod 3.1, 5.4; Örnek 5.16a, 5.16b
+m = length(xnames)
+n = 100
+criterion = 1 #AUC
+pimaGGA2 = adana(n=n, m=m, 
+  maxiter=100, objective="max", gatype="gga",
+  initfunc=initbin, fitfunc=pimafit, 
+  selfunc=seltour, adapfunc=NULL,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek 5.24d: GA ile seçilen değişkenler 2
+# Bağımlılık: Kod 3.3; Örnek 5.24c
+bestsol(pimaGGA2)
+xnames[pimaGGA2$bestsol$chromosome==1]
+
+# Örnek 5.25: Yem hammaddeleri veri dosyasının okunması
+setwd("C:/gabook")
+library(readxl)
+feeds = read_excel("catfishfeed.xlsx", sheet=1, col_names=TRUE)
+feeds = as.data.frame(feeds)
+feeds
+feednames = feeds[,1]
+feeds = feeds[,-1]
+nf = nrow(feeds)
+nc = ncol(feeds)-1
+constnames = colnames(feeds)[1:nc]
+feeds
+detach(package:readxl)
+
+# Örnek 5.26: lpSolveAPI ile optimizasyon problemini tanımlama
+if(!require(lpSolveAPI)){
+  install.packages("lpSolveAPI",
+    repo="https://cloud.r-project.org");
+  library(lpSolveAPI)
+}
+# Problem için lpSolveAPI nesnesinin tanımlanması 
+rm(cfp) # Daha önce tanımlanmışsa öncekini sil
+cfp = make.lp(nrow=0, ncol=nf)
+# Optimizasyon probleminin tanımlanması
+lp.control(cfp, sense="min")
+# Amaç fonksiyonun tanımlanması
+set.objfn(cfp, feeds[,4])
+# Kısıtların tanımlanması
+add.constraint(cfp, feeds[,1], ">=", rhs=30)
+add.constraint(cfp, feeds[,2], ">=", rhs=250)
+add.constraint(cfp, feeds[,3], "<=", lhs=0.5, rhs=1.5)
+add.constraint(cfp, c(0.0, 1.0, 0.0, 0.0, 0.0), ">=", rhs=8)
+add.constraint(cfp, c(0.0, 0.0, 0.0, 1.0, 0.0), ">=", rhs=20)
+add.constraint(cfp, rep(1, nf), "=", rhs=100)
+# Sınırların tanımlanması
+set.bounds(cfp, lower=rep(0, nf), columns=c(1:nf))
+set.bounds(cfp, upper=rep(100, nf), columns=c(1:nf))
+# Problem nesnesini etiketleme
+name.lp(cfp, "Kedibalığı yemi")
+constnames = c(constnames, "BALIKUNU","PIRINC", "TOPLAM")
+dimnames(cfp) = list(constnames, feednames)
+# Problemi dosyaya kaydetme
+write.lp(cfp,'catfishfeed.txt', type='lp')
+
+# Örnek 5.27: lpSolveAPI ile optimizasyon probleminin çözülmesi
+# Bağımlılık: Örnek 5.36
+# Problemin çözülmesi
+solve(cfp)
+# Amaç fonksiyon değeri
+get.objective(cfp)
+# Kısıtların karşılanma durumu
+get.constraints(cfp)
+# Sınır değerlerinin listelenmesi
+get.bounds(cfp)
+# Karar değişkenlerinin değerleri
+get.variables(cfp)
+sum(get.variables(cfp))
+# 1 ton yem karışımı
+karisim=round(get.variables(cfp)/ sum(get.variables(cfp))*1000)
+names(karisim) = feednames
+karisim
+
+# Örnek 5.28: GA ile yem karışımı 1
+# Bağımlılık: Kod 3.1, 5.13; Örnek 5.35
+m = nrow(feeds)
+n = 5000
+lb = rep(0, m)
+ub = rep(100, m)
+cfpGGA1 = adana(n=n, m=m, lb=lb, ub=ub, 
+  maxiter=500, objective="min", gatype="gga",
+  initfunc=initval, fitfunc=cfpfit1, selfunc=seltour, 
+  crossfunc=wax, mutfunc=nunimut, replace=elitism,
+  adapfunc=ilmdhc, selt=2, 
+  cxon=2, cxpc=0.8, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  tercrit=c(1), monitorfunc=monprogress)
+
+# Örnek 5.29: GA sonuçlarının incelenmesi
+# Bağımlılık: Kod 3.3; Örnek 5.38
+bestsol(cfpGGA1)
+toplam = sum(cfpGGA1$bestsol$chromosome)
+toplam
+maliyet = round(cfpGGA1$bestsol$fitval/toplam, 2)
+maliyet
+karisim = round(cfpGGA2$bestsol$chromosome/toplam*1000)
+names(karisim) = feednames
+karisim
+
+# Örnek 5.30: GA ile yem karışımı 2
+# Bağımlılık: Kod 3.1, 5.14; Örnek 5.35
+m = nrow(feeds)
+n = 5000
+lb = rep(0, m)
+ub = rep(100, m)
+cfpGGA2 = adana(n=n, m=m, lb=lb, ub=ub, 
+  maxiter=500, objective="min", gatype="gga",
+  initfunc=initval, fitfunc=cfpfit2, selfunc=seltour, 
+  crossfunc=wax, mutfunc=nunimut, replace=elitism,
+  adapfunc=ilmdhc, selt=2,
+  cxon=2, cxpc=0.8, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  tercrit=c(1), monitorfunc=monprogress)
+
+# Örnek 5.31: GA sonuçlarının incelenmesi 2
+# Bağımlılık: Kod 3.3; Örnek 5.40
+bestsol(cfpGGA2)
+toplam = sum(cfpGGA2$bestsol$chromosome)
+toplam
+maliyet = round(cfpGGA2$bestsol$fitval/toplam, 2)
+maliyet
+karisim = round(cfpGGA2$bestsol$chromosome/toplam*1000)
+names(karisim) = feednames
+karisim
+
+# Örnek 5.32: lpSolveAPI ile çözüm
+if(!require(lpSolveAPI)){
+  install.packages("lpSolveAPI",
+    repo="https://cloud.r-project.org");
+  library(lpSolveAPI)
+}
+# Problem için lpSolveAPI nesnesinin tanımlanması 
+rm(sspLP) # Daha önce tanımlanmışsa öncekini sil
+sspLP = make.lp(nrow=0, ncol=7)
+# Optimizasyon probleminin tanımlanması
+lp.control(sspLP, sense="min")
+# Amaç fonksiyonun tanımlanması
+set.objfn(sspLP, c(1,1,1,1,1,1,1))
+# Kısıtların tanımlanması
+add.constraint(sspLP, c(1,1,1,1,1,1,0), ">=", rhs=3)
+add.constraint(sspLP, c(0,1,1,1,1,1,1), ">=", rhs=5)
+add.constraint(sspLP, c(1,0,1,1,1,1,1), ">=", rhs=10)
+add.constraint(sspLP, c(1,1,0,1,1,1,1), ">=", rhs=12)
+add.constraint(sspLP, c(1,1,1,0,1,1,1), ">=", rhs=8)
+add.constraint(sspLP, c(1,1,1,1,0,1,1), ">=", rhs=3)
+add.constraint(sspLP, c(1,1,1,1,1,0,1), ">=", rhs=2)
+# Sınırların tanımlanması
+set.bounds(sspLP, lower=rep(0, 7), columns=c(1:7))
+set.bounds(sspLP, upper=rep(25, 7), columns=c(1:7))
+# Problem nesnesini etiketleme
+name.lp(sspLP, "Eleman Çizelgelemesi")
+constnames = c(1:7) #Kısıt adları
+daynames = c("Pts","Sal","Çar","Per","Cum","Cts", "Paz")
+dimnames(sspLP) = list(constnames, daynames)
+# Problemi dosyaya kaydetme
+write.lp(sspLP,'staffschedule.txt', type='lp')
+# Problemin çözülmesi
+solve(sspLP)
+# Amaç fonksiyon değeri
+get.objective(sspLP)
+# Kısıtların karşılanma durumu
+get.constraints(sspLP)
+# Sınır değerlerinin listelenmesi
+get.bounds(sspLP)
+# Karar değişkenlerinin değerleri
+sspschedule = get.variables(sspLP)
+names(sspschedule)=daynames
+sspschedule
+
+# Örnek 5.33: Başlangıç popülasyonu ve optimizasyon parametreleri
+# Bağımlılık: Kod 2.8, 2.10, 2.14, 5.15
+lb = rep(0, 7)
+ub = rep(25, 7)
+M = calcM(ub)
+n = 1000
+m = sum(M)
+initpop = initval(n, lb=lb, ub=ub, nmode="integer", type=2)
+head(initpop,3)
+prevpop = matrix(NA, nrow=n, ncol=sum(M))
+for(i in 1:n)
+  prevpop[i,] = encode4int(initpop[i,], M=M)
+rownames(prevpop) = rownames(initpop)
+prevpop[1:3, 1:10]
+
+# Örnek 5.34: adana ile GA optimizasyonu
+# Bağımlılık: Kod 3.1, 5.15; Örnek 5.49
+sspGGA = adana(n=n, m=m, lb=lb, ub=ub, 
+  maxiter=100, objective="min", gatype="gga",
+  initfunc=initbin, prevpop=prevpop,
+  fitfunc=sspfit, selfunc=seltour, 
+  crossfunc=kpx, mutfunc=swapmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, cxpc=0.9, reps=4, repk=5, mutpm=0.05, 
+  tercrit=c(1), monitorfunc=monprogress)
+ 
+# Örnek 5.35: Sonuçların görüntülenmesi
+# Bağımlılık: Kod 3.3; Örnek 5.50
+bestsol(sspGGA)
+sspschedule = decode4int(sspGGA$bestsol$chromosome, M=M)
+names(sspschedule)=daynames
+sspschedule
+
+# Örnek 5.36: iris verisetinin yüklenmesi ve analize hazırlanması
+data(iris)
+irisdata = iris[,1:4]
+
+# Örnek 5.37: Optimal küme sayısının saptanması
+# ClusterR - OptimalClusters ile küme sayısının saptanması 
+if(!require("ClusterR")) {install.packages("ClusterR",
+  repo="https://cloud.r-project.org"); library(ClusterR)}
+kmocres = Optimal_Clusters_KMeans(irisdata, max_clusters=10,
+  criterion='distortion_fK', fK_threshold=0.85,
+  initializer='optimal_init', tol_optimal_init=0.01,
+  plot_clusters=TRUE)
+kmocres
+optk = which.max(kmocres[1:length(kmocres)])[1]
+optk
+
+# Örnek 5.38: K-ortalamalar kümelemesi
+kmres = kmeans(irisdata, centers=optk)
+kmres
+merkezler = kmres$centers
+kumeler = kmres$cluster
+plot(irisdata[,1], irisdata[,3], col=kumeler, pch=19,
+  xlab="", ylab="", main="K-ortalamalar Kümelemesi")
+
+# Örnek 5.39: Uzak sistemden görüntü dosyasının indirilmesi
+# imager paketinin yüklenmesi
+if(!require(imager)) {
+  install.package("imager", 
+  repo="https://cloud.r-project.org");
+  library(imager)
+}
+# OpenImageR paketinin yüklenmesi
+if(!require("OpenImageR")) {
+  install.packages("OpenImageR",
+  repo="https://cloud.r-project.org");
+  library(OpenImageR)
+}
+# Dosya URL'inin tanımlanması
+url = "https://upload.wikimedia.org/wikipedia/commons/0/0a/African_Monarch_%28Danaus_chrysippus%29_1.JPG"
+# Dosyanın indirilmesi
+download.file(url,"sultan.jpg", mode = "wb") 
+# Görüntünün çalışma alanına okunması
+sultan = readImage("sultan.jpg")
+# Görüntünün gösterilmesi
+imageShow(sultan)
+
+# Örnek 5.40: Görüntü dosyasının yerel diske kaydedilmesi
+# Bağımlılık: Örnek 5.55
+setwd("C:/gabook")
+writeImage(sultan, "sultan.jpg")
+
+# Örnek 5.41: Yerel diskten görüntü okuma ve yeniden boyutlandırma
+# Bağımlılık: Örnek 5.56
+goruntudosyasi = "sultan.jpg"
+sultan = readImage(goruntudosyasi)
+# Görüntü boyutlarının öğrenilmesi
+boyut = dim(sultan)
+# boyut = c(nrow(sultan), ncol(sultan), 3)  #Alternatif yöntem
+boyut
+# Görüntünün yeniden boyutlandırılması
+boran = boyut[2]/boyut[1]
+boyut[1] = 90
+boyut[2] = boyut[1]*boran
+sultan = resizeImage(sultan, boyut[1], boyut[2], method='bilinear')
+boyut = dim(sultan)
+boyut
+imageShow(sultan)
+
+# Örnek 5.42: RGB vektörlerinin oluşturulması
+# Bağımlılık: Örnek 5.57
+sultanRGB = apply(sultan, 3, as.vector)  
+str(sultanRGB)
+head(sultanRGB)
+
+# Örnek 5.43: RGB veri çerçevesinin yapısı
+# Bağımlılık: Kod 5.16; Örnek 5.58
+sultanRGBdf = getRGB(sultan)
+str(sultanRGBdf)
+head(sultanRGBdf)
+
+# Örnek 5.44: RGB verisinde optimal küme sayısının saptanması
+# Bağımlılık: Örnek 5.58
+# ClusterR - OptimalClusters ile küme sayısının saptanması 
+if(!require("ClusterR")) {install.packages("ClusterR",
+  repo="https://cloud.r-project.org"); library(ClusterR)}
+kmocres = Optimal_Clusters_KMeans(sultanRGB, max_clusters=10,
+  criterion='distortion_fK', fK_threshold=0.85,
+  initializer='optimal_init', tol_optimal_init=0.01,
+  plot_clusters=TRUE)
+optk = which.max(kmocres[1:length(kmocres)])[1]
+optk
+
+# Örnek 5.45: K-ortalamalar kümelemesi ile bölütleme 1
+# Bağımlılık: Örnek 5.59
+kmres = kmeans(sultanRGBdf[, c("R", "G", "B")], centers=optk)
+merkezler = kmres$centers
+kumeler = kmres$cluster
+sultancol = rgb(merkezler[kumeler,])
+plot(sultanRGBdf$x,sultanRGBdf$y, type="n", xlab="", ylab="")
+text(sultanRGBdf$x,sultanRGBdf$y, pch=22, col=sultancol)
+
+# Örnek 5.46: Bölütlemenin görüntülenmesi 1
+# Bağımlılık: Örnek 5.61
+# Gözlemleri yakındaki merkezle ilişkilendir
+sultankm = merkezler[kumeler,]
+dim(sultankm) = boyut
+imageShow(sultankm)
+
+# Örnek 5.47: K-ortalamalar kümelemesi ile bölütleme 2
+# Bağımlılık: Örnek 5.59
+# ClusterR – Kmeans_rccp ile K-ortalamalar
+if(!require("ClusterR")) {install.packages("ClusterR",
+  repo="https://cloud.r-project.org"); library(ClusterR)}
+kmrcppres = KMeans_rcpp(sultanRGB, clusters=optk,
+  num_init=5, max_iters=100, 
+  initializer = 'optimal_init', verbose=F)
+kmrcppres$between.SS_DIV_total.SS
+merkezler = kmrcppres$centroids
+kumeler = kmrcppres$clusters
+#Gözlemleri yakındaki merkezle ilişkilendirme
+sultankmc = merkezler[kumeler, ] 
+dim(sultankmc) = boyut #3B'lu yap
+imageShow(sultankmc)
+
+# Örnek 5.48: Bulanık C-ortalamalar (FCM) ile görüntü bölütleme
+# Bağımlılık: Örnek 5.59
+if(!require("ppclust")) {install.packages("ppclust",
+  repo="https://cloud.r-project.org"); library(ppclust)}
+fcmres = fcm(sultanRGB, centers=optk)
+merkezler = fcmres$v
+kumeler = fcmres$cluster
+sultanfcm = merkezler[kumeler,]     
+dim(sultanfcm) = boyut
+imageShow(sultanfcm)
+
+# Örnek 5.49: GA ile bölütleme
+# Bağımlılık: Kod 5.17; Örnek 5.59
+clusterGA = list()
+clusterGA$ds = matrix(sultanRGB, ncol=3)
+eucdist = dist(clusterGA$ds, method="euclidean",
+  diag=FALSE, upper=FALSE)^2
+clusterGA$dist = eucdist #Öklid uzaklıklar matrisi
+clusterGA$k = optk #Küme sayısı
+lb = apply(clusterGA$ds, 2, min)
+ub = apply(clusterGA$ds, 2, max)
+lb = unlist(lapply(lb, function(x) (rep(x, clusterGA$k))))
+ub = unlist(lapply(ub, function(x) (rep(x, clusterGA$k))))
+n = 100 
+m = ncol(clusterGA$ds)*clusterGA$k
+sultanGGA = adana(n=n, m=m, lb=lb, ub=ub, 
+  maxiter=50, objective="max", gatype="gga",
+  initfunc=initval, fitfunc=aswfit, selfunc=seltour, 
+  crossfunc=wax, mutfunc=nunimut, replace=elitism,
+  adapfunc=ilmdhc, selt=2, 
+  cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  tercrit=c(1), monitorfunc=monprogress)
+
+# Örnek 5.50: GA ile bölütleme sonuçlarının incelenmesi
+# Bağımlılık: Örnek 5.65
+bestchrom = sultanGGA$bestsol$chromosome
+bestchrom = matrix(bestchrom, nrow = clusterGA$k,
+  ncol = ncol(clusterGA$ds))
+clusters = apply(Rfast::dista(clusterGA$ds,
+  bestchrom, "euclidean", square=TRUE), 1, which.min)
+clusters
+asw = cluster::silhouette(clusters, clusterGA$dist)
+summary(asw)$avg.width
+if(!require(clusterCrit)){
+  install.packages("clusterCrit",
+   repo="https://cloud.r-project.org")}
+ch = clusterCrit::intCriteria(as.matrix(clusterGA$ds),
+  clusters, "Calinski_Harabasz")
+ci = clusterCrit::intCriteria(as.matrix(clusterGA$ds),
+  clusters, "C_index")
+di = clusterCrit::intCriteria(as.matrix(clusterGA$ds),
+  clusters, "Dunn") 
+summary(asw)$avg.width
+ch
+ci
+di
+
+# Örnek 5.51a: GA bölütlemesi ilerleme grafiği
+# Bağımlılık: Örnek 5.65
+bestsol(sultanGGA)
+plotfitness(sultanGGA$genfits, c(3,2,1))
+
+# Örnek 5.51b: GA bölütlemesinin görüntülenmesi
+# Bağımlılık: Örnek 5.65
+sultanGA = bestchrom[clusters,]     
+dim(sultanGA) = boyut
+imageShow(sultanGA)
+ 
+# BÖLÜM 6 .........................................................
+
+# Örnek 6.1: Pareto cepheler ve çözümler
+f1=c(2, 1, 5, 4, 5)
+f2=c(2, 3, 2, 3, 5)
+plot(f1,f2, cex=1.5, pch=20, col="blue",
+  xlim=c(0,6), ylim=c(0,6), 
+  xlab="max f1(x)", ylab="min f2(x)", main="Pareto Cepheleri")
+text(f1,f2, labels=c(LETTERS[1:5]), pos=3, col="black")
+points(f1[1:2], f2[1:2], col="red", pch=19)
+segments(0.2,3.5,3.5,0.2, col="orange", lwd=2, lty=2)
+segments(1.4,5.5,5.7,1.0, col="orange", lwd=2, lty=2)
+segments(4.0,5.5,6.0,3.5, col="orange", lwd=2, lty=2)
+segments(3.0,0,0,3, col="orange", lwd=2, lty=2)
+text(0.3,3.5, labels="Cephe 1", pos=3, col="blue")
+text(2.5,4.5, labels="Cephe 2", pos=3, col="blue")
+text(4.0,5.5, labels="Cephe 3", pos=3, col="blue")
+text(2.5,0.1, labels="Pareto optimal cephe", pos=3, col="blue")
+
+# Örnek 6.2a: binhtest4 fonksiyonu çıktı testi 
+# Bağımlılık: Kod 6.1a
+x = c(3, 1)
+binhtest4(x)
+
+# Örnek 6.2b: binhtest4 fonksiyonu çıktı testi 
+# Bağımlılık: Kod 6.1b
+x = c(3, 1)
+binhtest4const(x)
+
+# Örnek 6.3: mco ile MOGA uygulaması
+# Bağımlılık: Kod 6.1a,6.1b
+if(!require(mco)){
+ install.packages("mco", 
+  repo="https://cloud.r-project.org")
+}
+binhMOGA = nsga2(fn=binhtest4, idim=2, odim=2, 
+  constraints=binhtest4const, 
+  generations=100, popsize=20,
+  lower.bounds=rep(-7, 2), upper.bounds=rep(4, 2),
+  cprob=0.9, cdist=5, mprob=0.1, mdist=10)
+
+# Örnek 6.4: mco nsga2 nesnesi bileşenleri
+# Bağımlılık: Örnek 6.2
+attributes(binhMOGA)
+binhMOGA$par
+binhMOGA$val
+binhMOGA$pareto.optimal
+
+# Örnek 6.5: Pareto cephesi ve Pareto kümesi
+# Bağımlılık: Örnek 6.2
+paretoFront(binhMOGA)
+paretoSet(binhMOGA)
+
+# Örnek 6.65: MOGA sonuçlarının görselleştirilmesi
+# Bağımlılık: Örnek 6.2
+opar = par(mfrow=c(1,2))
+plot(binhMOGA$par, pch=19, col="red",
+  xlab="x", ylab="y", main="Parametre Uzayı")
+plot(binhMOGA$value[,1], binhMOGA$value[,2],
+  pch=19, col="red", lwd=3, xlab="f1", ylab="f2", 
+  main="Amaç Uzayı")
+par(opar)
+
+# Örnek 6.7: Pareto cephesi kalitesini değerlendirme
+# Bağımlılık: Kod 6.1a, 6.1b
+binhMOGA = nsga2(binhtest4, 2, 2, 
+  generations=1000, popsize=100,
+  lower.bounds=rep(-7, 2), upper.bounds=rep(4, 2),
+  cprob=0.9, cdist=5, mprob=0.1, mdist=10,
+  constraints= binhtest4const)
+binhMOGA2 = nsga2(binhtest4, 2, 2,
+ lower.bounds=c(-7,-7), upper.bounds=c(4, 4),
+ popsize=20, generations=c(2, 4, 6, 8, 10, 20, 50))
+n = length(binhMOGA2)
+domhypvol = sapply(1:n, function(i) 
+  dominatedHypervolume(binhMOGA2[[i]], c(1, 1)))
+round(domhypvol, 3)
+gendist = sapply(1:n, function(i)
+  generationalDistance(binhMOGA2[[i]], binhMOGA))
+round(gendist, 3)
+genspread = sapply(1:n, function(i) 
+  generalizedSpread(binhMOGA2[[i]], binhMOGA))
+round(genspread, 3)
+
+# Örnek 6.8: nsga2R ile MOGA uygulaması
+# Bağımlılık: 6.1c
+if(!require(nsga2R)){
+ install.packages("nsga2R", 
+   repo="https://cloud.r-project.org");
+ library(nsga2R) }
+nvar = 2; nfun=2
+binhMOGA3 = nsga2R(binhtest4_2, varNo=nvar, objDim=nfun, 
+  lowerBounds=rep(-7, nvar), upperBounds=rep(4, nvar),
+  popSize = 20, generations=100, tourSize=2,
+  cprob=0.9, XoverDistIdx=5, mprob=0.1, MuDistIdx=10)
+
+# Örnek 6.9: nsga2R sonuç nesnesi bileşenleri ve görüntüleme
+# Bağımlılık: Örnek 6.7
+attributes(binhMOGA3)
+# Karar değişkenlerinin değerleri
+binhMOGA3$parameters                                       
+# Amaç fonksiyonların değerleri
+binhMOGA3$objectives                       
+# Kalabalık uzaklığı
+binhMOGA3$crowdingDistance
+# Amaç uzayı, pareto cephe grafiği
+plot(binhMOGA3$objectives, pch=19, col="red",
+  xlab="x", ylab="y", main="Amaç Uzayı")
+
+# Örnek 6.10: SPOT ile MOGA uygulaması
+# Bağımlılık: 6.1c
+if(!require(SPOT)){
+ install.packages("SPOT", 
+   repo="https://cloud.r-project.org");
+ library(SPOT)}
+binhMOGA4 = nsga2(binhtest4_2, 2, 2, 
+ lower.bounds=c(-7, -7), upper.bounds=c(4, 4),
+ popsize=32, generations=30)
+names(binhMOGA4)
+objective = binhMOGA4$value
+parameter = binhMOGA4$par
+head(objective,3)
+head(parameter, 3)
+opar = par(mfrow=c(1,2))
+plot(parameter, pch=19, col="red",
+  xlab="x", ylab="y", main="Parametre Uzayı")
+plot(objective, pch=19, col="red", lwd=3, xlab="f1", ylab="f2", 
+  main="Amaç Uzayı")
+par(opar)
+
+# Örnek 6.11: caRamel ile MOGA uygulaması
+# Bağımlılık: 6.1d
+if(!require(caRamel)){
+  install.packages("caRamel", 
+    repo="https://cloud.r-project.org");
+  library(caRamel)}
+nvar = 2 # Değişken sayısı
+bounds = matrix(data=1, nrow=nvar, ncol=2) # Alt ve üst sınırlar
+bounds[, 1] = -7 * bounds[, 1]
+bounds[, 2] = 4 * bounds[, 2]
+nobj = 2 # Amaç sayısı
+minmax = c(FALSE, FALSE) # Amaç min için FALSE, max için TRUE
+popsize = 1000 # Popülasyon büyüklüğü
+archsize = 100 # Pareto cephesi arşiv büyüklüğü
+maxrun = 1000 # Maksimum iterasyon sayısı
+prec = matrix(1.e-6, nrow=1, ncol=nobj) # Yaklaşma değeri
+carallel = FALSE # Paralel çalışma (FALSE yok)
+binhMOGA4 = caRamel(nobj, nvar, minmax, bounds,
+   binhtest4_3, popsize, archsize, maxrun, prec, carallel=carallel)
+attributes(binhMOGA4) # caRamel sonuç nesnesi bileşenleri
+# Pareto grafikleri
+opar = par(mfrow=c(1,2))
+plot(binhMOGA4$objectives, col="red", pch=19,
+  xlab="f1", ylab="f2", 
+  main="Binh Test #4 Pareto cephesi") 
+#X'e ilişkin değerler
+plot(binhMOGA4$parameters, col="red", pch=19,
+ xlab="Arşiv elemanı", ylab="X Değişkeni", main="X değerleri")
+par(opar)
+
+# Örnek 6.12: desire ile çekicilik puanı hesaplama
+# Bağımlılık: Kod 6.2; Örnek 6.11
+if(!require(desire)){
+ install.packages("desire", 
+  repo="https://cloud.r-project.org");
+  library(desire)}
+paretosol = binhMOGA4$objectives
+# Çekicilik fonksiyonları (desirability functions)
+desfunc = harrington1(0.1, 0.9, 0.7, 0.3)
+# Çekicilik indeksi toplama fonksiyonu (aggregate function)
+desaggfunc = geometricDI(desfunc)
+# Pareto çözümlerin çekiciliğine göre sıra değeri
+desrank(paretosol, desaggfunc)
+
+# ALIŞTIRMA ÖRNEKLERi .................................
+# Örnek A.1: Analiz matrislerinin hazırlanması
+# Eğitim verisinden bağımsız değişkenler matrisi
+idvmat = as.matrix(pimatrain[,1:8])
+# Eğitim verisinden sınıf (bağımlı değişken) matrisi
+dvmat = as.matrix(pimatrain[,9])
+
+# Örnek A.2a: GA + LDA ile değişken seçme 1
+# Bağımlılık: Kod 3.1, 5.5; Örnek 5.25
+m = length(xnames)
+n = 100
+pimaLDAGGA1 = adana(n=n, m=m, 
+  maxiter=100, objective="min", gatype="gga",
+  initfunc=initbin, fitfunc=pimaldafit1,
+  selfunc=seltour, adapfunc=NULL,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek A.2b: GA+LDA ile seçilen değişkenler 1
+# Bağımlılık: Kod 3.3; Örnek 5.26a
+bestsol(pimaLDAGGA1)
+xnames[cbLDAGGA1$bestsol$chromosome==1]
+
+# Örnek A.3a: GA + LDA ile değişken seçme 2
+# Bağımlılık: Kod 3.1, 5.6; Örnek 5.25
+m = length(xnames)
+n = 100
+pimaLDAGGA2 = adana(n=n, m=m, 
+  maxiter=100, objective="max", gatype="gga",
+  initfunc=initbin, fitfunc=pimaldafit2,
+  selfunc=seltour, adapfunc=NULL,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek A.3b: GA + LDA ile seçilen değişkenler 2
+# Bağımlılık: Kod 3.3; Örnek 5.27a
+bestsol(pimaLDAGGA2)
+xnames[pimaLDAGGA2$bestsol$chromosome==1]
+
+# Örnek A.4a: GA + QDA ile değişken seçme 1
+# Bağımlılık: Kod 3.1, 5.7; Örnek 5.25
+m = length(xnames)
+n = 100
+pimaQDAGGA1 = adana(n=n, m=m, 
+  maxiter=100, objective="min", gatype="gga",
+  initfunc=initbin, fitfunc=pimaqdafit1,
+  selfunc=seltour, adapfunc=NULL,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek A.4b: GA + QDA ile seçilen değişkenler 1
+# Bağımlılık: Kod 3.3; Örnek 5.28a
+bestsol(pimaQDAGGA1)
+xnames[pimaQDAGGA1$bestsol$chromosome==1]
+
+# Örnek A.5a: GA + QDA ile değişken seçme 2
+# Bağımlılık: Kod 3.1, 5.8; Örnek 5.25
+m = length(xnames)
+n = 100
+pimaQDAGGA2 = adana(n=n, m=m, 
+  maxiter=100, objective="max", gatype="gga",
+  initfunc=initbin, fitfunc=pimaqdafit2,
+  selfunc=seltour, adapfunc=NULL,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek A.5b: GA + QDA ile seçilen değişkenler 2
+# Bağımlılık: Kod 3.3; Örnek 5.29a
+bestsol(pimaQDAGGA2)
+xnames[pimaQDAGGA2$bestsol$chromosome==1]
+
+# Örnek A.6a: GA + MDA değişken seçimi 1
+# Bağımlılık: Kod 3.1, 5.9; Örnek 5.25
+m = length(xnames)
+n = 100
+pimaMDAGGA1 = adana(n=n, m=m, 
+  maxiter=100, objective="max", gatype="gga",
+  initfunc=initbin, fitfunc=pimamdafit1,
+  selfunc=seltour, adapfunc=NULL,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek A.6b: GA + MDA ile seçilen değişkenler 1
+# Bağımlılık: Kod 3.3; Örnek 5.30a
+bestsol(pimaMDAGGA1)
+xnames[pimaMDAGGA1$bestsol$chromosome==1]
+
+# Örnek A.7a: GA + MDA değişken seçimi 2
+# Bağımlılık: Kod 3.1, 5.10; Örnek 5.25
+m = length(xnames)
+n = 100
+pimaMDAGGA2 = adana(n=n, m=m, 
+  maxiter=100, objective="min", gatype="gga",
+  initfunc=initbin, fitfunc=pimamdafit2,
+  selfunc=seltour, adapfunc=NULL,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek A.7b: GA + MDA ile seçilen değişkenler 2
+# Bağımlılık: Kod 3.3; Örnek 5.31a
+bestsol(pimaMDAGGA2)
+xnames[pimaMDAGGA2$bestsol$chromosome==1]
+
+# Örnek A.8a: GA + FDA ile değişken seçimi
+# Bağımlılık: Kod 3.1, 5.11; Örnek 5.25
+m = length(xnames)
+n = 100
+pimaFDAGGA = adana(n=n, m=m, 
+  maxiter=100, objective="max", gatype="gga",
+  initfunc=initbin, fitfunc=pimafdafit,
+  selfunc=seltour, adapfunc=NULL,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek A.8b: GA + FDA ile seçilen değişkenler
+# Bağımlılık: Kod 3.3; Örnek 5.32a
+bestsol(pimaFDAGGA)
+xnames[pimaFDAGGA$bestsol$chromosome==1]
+
+# Örnek A.9a: GA + RDA değişken seçimi
+# Bağımlılık: Kod 3.1, 5.12; Örnek 5.25
+m = length(xnames)
+n = 100
+pimaRDAGGA = adana(n=n, m=m, 
+  maxiter=100, objective="min", gatype="gga",
+  initfunc=initbin, fitfunc=pimardafit,
+  selfunc=seltour, adapfunc=NULL,
+  crossfunc=kpx, mutfunc=bitmut, replace=elitism,
+  selt=2, cxon=2, cxk=3, reps=4, repk=5, mutpm=0.05, 
+  monitorfunc=monprogress)
+
+# Örnek A.9b: GA ile seçilen değişkenler 6
+# Bağımlılık: Kod 3.3; Örnek 5.33a
+bestsol(pimaRDAGGA)
+xnames[pimaRDAGGA$bestsol$chromosome==1]
+
+# Örnek A.10: Ayırma analizi yöntemlerinin test edilmesi
+# Bağımlılık: Örnek 5.16a, 5.16b
+# Paketlerin kurulması
+instpak = function(pkg){
+   new.pkg = pkg[!(pkg %in% installed.packages()[,"Package"])]
+   if (length(new.pkg)) 
+       install.packages(new.pkg, dependencies = TRUE)
+   sapply(pkg, require, character.only = TRUE)
+}
+paketler = c("MASS", "mda", "klaR")
+instpak(paketler)
+# DA modellerinin test edilmesi 
+ldamodel = MASS::lda(y~x2+x4+x5+x6+x7+x8, data=pimatrain)
+# Test verisinde LDA modeliyle tahmin
+ldapred = predict(ldamodel, newdata=pimatest)
+# Model doğruluğu
+ldaacc = mean(ldapred$class == pimatest$y)
+qdamodel = MASS::qda(y~x2+x7+x8, data=pimatrain)
+# Test verisinde QDA modeliyle tahmin
+qdapred = predict(qdamodel, newdata=pimatest)
+# Model doğruluğu
+qdaacc = mean(qdapred$class==pimatest$y)
+rdamodel = klaR::rda(y~x2+x3+x7+x8, data=pimatrain)
+# Test verisinde RDA modeliyle tahmin
+rdapred = predict(rdamodel, newdata=pimatest)
+# Model doğruluğu
+rdaacc = mean(rdapred$class == pimatest$y)
+mdamodel = mda::mda(y~x2+x3+x5+x6+x7+x8, data=pimatrain)
+# Test verisinde MDA modeliyle tahmin
+mdapred = predict(mdamodel, newdata=pimatest)
+# Model doğruluğu
+mdaacc = mean(mdapred == pimatest$y)
+fdamodel = mda::fda(y~x2+x3+x7+x8, data=pimatrain)
+# Test verisinde FDA modeliyle tahmin
+fdapred = predict(fdamodel, newdata=pimatest)
+# Model doğruluğu
+fdaacc = mean(fdapred == pimatest$y)
+acc = data.frame(LDA=ldaacc, QDA=qdaacc, 
+  RDA=rdaacc, MDA=mdaacc, FDA=fdaacc)
+acc 

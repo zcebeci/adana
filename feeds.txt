@@ -1,0 +1,18 @@
+Feeds	Vars	DM	CP	TDN	Ca	P	Cost
+Paddy straw	x1	90	0.0513	0.4	0.0018	0.0008	5
+Co-4 grass	x2	25	0.08	0.52	0.00144	0.0009	3
+Maize fodder	x3	25	0.08	0.6	0.0053	0.0014	3
+Co FS 29 sorghum fodder	x4	90	0.07	0.5	0.0012	0.0009	3
+Ragi straw	x5	90	0.06	0.42	0.0015	0.0009	3
+Maize  	x6	90	0.081	0.792	0.00018	0.0027	17
+Soya DOC	x7	90	0.42	0.7	0.00018	0.00225	38
+Copra DOC	x8	90	0.22	0.7	0.00036	0.009	23
+Cotton DOC	x9	90	0.32	0.7	0.00036	0.009	23
+Wheat bran	x10	90	0.12	0.7	0.01067	0.00093	17
+Gram chunnie	x11	90	0.17	0.6	0.000108	0.00234	12
+Cotton seed	x12	90	0.16	1.10	0.003	0.0062	21
+Concenrate mix 1	x13	90	0.22	0.7	0.005	0.0045	17
+Calcite	x14	97	0	0	0.36	0	4
+MM	x15	90	0	0	0.32	0.06	50
+DCP	x16	90	0	0	0.24	0.16	28
+Salt	x17	90	0	0	0	0	5
